@@ -38,7 +38,7 @@ class AI_(turtle.Turtle):
         freq = range(self.chance, 100)
         if not(bool(actions)):
             for i in turtle_functions:
-                actions[i] = random.choice(freq)
+                actions[random.choice(freq)] = i
 
     def _param_needed(self, fun):
         if not(inspect.getargspec(fun)[0]) is None:
@@ -153,15 +153,15 @@ class AI_(turtle.Turtle):
                 pickle.dump(self.prefs, p)
 
     def smart_act(self, t):
+        prefs = self.prefs
         self._smart_gen_values()
-        actions = self.actions # {'func_name': fun_int}
-        action_keys = actions.keys # ['func_name']
-        action_values = dict.fromkeys(actions.keys())
+        actions = self.actions # {fun_int: 'func_name'}
+        action_keys = actions.keys() # [fun_int]
+        action_values = actions.values() # ['func_name']
         prev_x = self.Turtle.xcor()
         prev_y = self.Turtle.ycor()
         func_params = self.func_params
         chance = self.chance
-        prefs = self.prefs
         r_time = 0
         if not(self._file_empty("params.txt")):
             with open("params.txt", "rb") as f:
@@ -171,32 +171,41 @@ class AI_(turtle.Turtle):
             with open("prefs.txt", "rb") as f:
                 f_prefs = pickle.load(f)
                 prefs.update(f_prefs)
-        else:
-            for i in turtle_functions:
-                prefs[i] = 0
 
         while (r_time < t):
             prev_x = self.Turtle.xcor()
             prev_y = self.Turtle.ycor()
+            for i in prefs.values():
+                if i >= 1:
+                    ##prefer that option
+                    again = random.choice(range(i))
+            
             action = random.choice(range(chance, 100))
-            print (action)
-            if (action in action_values):
-                if self._param_needed(getattr(self.Turtle, action)):
+            ##print (action)
+            if (action in action_keys):
+                action_val = action
+                action = actions[action]
+                if not(self._param_needed(getattr(self.Turtle, action)) is False):
                     needed_param = self._param_needed(getattr(self.Turtle, action))
                     fun = getattr(self.Turtle, action)
-                    if type(_working_param(fun, needed_param)) is int:
+                    working_param = self._working_param(fun, needed_param)
+                    print (action, working_param)
+                    if type(self._working_param(fun, needed_param)) is int:
                         if ((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)):
-                            print (prefs, action)
-
+                            ##print ("#MOVED")
+                            prefs[action] += 1
 
             time.sleep(0.5)
             r_time += 0.5
+
             
 
 
 screen = turtle.Screen()
 AI = AI_(10)
 ##AI.act(10)
-AI.smart_act(10)
-##print ("\n", AI.get_prefs())
+print (AI.get_prefs(), "\n")
+AI.smart_act(15)
+AI.save_stats(prefs="prefs.txt")
+print ("\n", AI.get_prefs())
 ##print ("\n", AI.get_ran_fun())
