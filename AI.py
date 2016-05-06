@@ -12,7 +12,6 @@ class AI_(turtle.Turtle):
         self.Turtle = __turtle_
         actions = {}
         self.actions = actions
-        self._gen_values()
         func_params = {}
         good_functions = {}
         prefs = {}
@@ -33,6 +32,14 @@ class AI_(turtle.Turtle):
         ##print (actions)
         ##print (options)
 
+    def _smart_gen_values(self):
+        actions = self.actions
+        prefs = self.prefs
+        freq = range(self.chance, 100)
+        if not(bool(actions)):
+            for i in turtle_functions:
+                actions[i] = random.choice(freq)
+
     def _param_needed(self, fun):
         if not(inspect.getargspec(fun)[0]) is None:
             needed_param = inspect.getargspec(fun)[0]
@@ -44,6 +51,7 @@ class AI_(turtle.Turtle):
         return False if os.path.isfile(file) and os.path.getsize(file) > 0 else True
 
     def act(self, t):
+        self._gen_values()
         ##print(self.func_params)
         if not(self._file_empty("memory.txt")):
             with open("memory.txt", "rb") as f:
@@ -113,20 +121,27 @@ class AI_(turtle.Turtle):
                     values.append(value)
 
         for index, i in enumerate(values):
-            good = False
             try:
                 fun(i)
                 ##func_params[fun] = i
                 ##print (i, 'i')
-                good = True
                 return i
             except:
                 pass
 
     def get_ran_fun(self):
-        with open("memory.txt", "rb") as f:
-            ran_functs = pickle.load(f)
-            return ran_functs
+        if not(self._file_empty("memory.txt")):
+            with open("memory.txt", "rb") as f:
+                ran_functs = pickle.load(f)
+                return ran_functs
+
+    def get_prefs(self):
+        if not(self._file_empty("prefs.txt")):
+            with open("prefs.txt", "rb") as p:
+                prefs = pickle.load(p)
+                return prefs
+        else:
+            return self.prefs
 
     def save_stats(self, f_params=None, prefs=None):
         assert (not(f_params is None) or not(prefs is None)),"Please specify object to save"
@@ -138,21 +153,50 @@ class AI_(turtle.Turtle):
                 pickle.dump(self.prefs, p)
 
     def smart_act(self, t):
+        self._smart_gen_values()
+        actions = self.actions # {'func_name': fun_int}
+        action_keys = actions.keys # ['func_name']
+        action_values = dict.fromkeys(actions.keys())
+        prev_x = self.Turtle.xcor()
+        prev_y = self.Turtle.ycor()
         func_params = self.func_params
+        chance = self.chance
         prefs = self.prefs
         r_time = 0
-        if not(self._file_empty("memory.txt")):
-            with open("memory.txt", "rb") as f:
+        if not(self._file_empty("params.txt")):
+            with open("params.txt", "rb") as f:
                 f_func_params = pickle.load(f)
                 func_params.update(f_func_params)
         if not(self._file_empty("prefs.txt")):
             with open("prefs.txt", "rb") as f:
                 f_prefs = pickle.load(f)
                 prefs.update(f_prefs)
+        else:
+            for i in turtle_functions:
+                prefs[i] = 0
+
+        while (r_time < t):
+            prev_x = self.Turtle.xcor()
+            prev_y = self.Turtle.ycor()
+            action = random.choice(range(chance, 100))
+            print (action)
+            if (action in action_values):
+                if self._param_needed(getattr(self.Turtle, action)):
+                    needed_param = self._param_needed(getattr(self.Turtle, action))
+                    fun = getattr(self.Turtle, action)
+                    if type(_working_param(fun, needed_param)) is int:
+                        if ((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)):
+                            print (prefs, action)
+
+
+            time.sleep(0.5)
+            r_time += 0.5
+            
 
 
 screen = turtle.Screen()
 AI = AI_(10)
 ##AI.act(10)
 AI.smart_act(10)
+##print ("\n", AI.get_prefs())
 ##print ("\n", AI.get_ran_fun())
