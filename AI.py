@@ -82,8 +82,7 @@ class AI_(turtle.Turtle):
 
         with open("memory.txt", "wb") as f:
             func_params = self.func_params
-            func_params = self.func_params
-            pickle.dump(self.func_params, f)
+            pickle.dump(func_params, f)
 
     def _working_param(self, fun, params):
         func_params = self.func_params
@@ -129,14 +128,24 @@ class AI_(turtle.Turtle):
             ran_functs = pickle.load(f)
             return ran_functs
 
+    def save_stats(self, f_params=None, prefs=None):
+        assert (not(f_params is None) or not(prefs is None)),"Please specify object to save"
+        if not(f_params is None):
+            with open("params.txt", "wb") as f:
+                pickle.dump(self.func_params, f)
+        elif not(prefs is None):
+            with open("prefs.txt", "wb") as p:
+                pickle.dump(self.prefs, p)
+
     def smart_act(self, t):
         func_params = self.func_params
         prefs = self.prefs
-        if not(self._file_empty("memory.txt"):
+        r_time = 0
+        if not(self._file_empty("memory.txt")):
             with open("memory.txt", "rb") as f:
                 f_func_params = pickle.load(f)
                 func_params.update(f_func_params)
-        if not(self._file_empty("prefs.txt"):
+        if not(self._file_empty("prefs.txt")):
             with open("prefs.txt", "rb") as f:
                 f_prefs = pickle.load(f)
                 prefs.update(f_prefs)
@@ -146,4 +155,4 @@ screen = turtle.Screen()
 AI = AI_(10)
 ##AI.act(10)
 AI.smart_act(10)
-print ("\n", AI.get_ran_fun())
+##print ("\n", AI.get_ran_fun())
