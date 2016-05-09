@@ -1,8 +1,7 @@
 #! C:/Users/MichaelLFarwell/AppData/Local/Programs/Python/Python35-32/python.exe
-import random, math, turtle, time, inspect, pickle
+import random, math, turtle, time, inspect, pickle, os
 
 turtle_functions = turtle._tg_turtle_functions
-##turtle_functions = ['fd', 'bk', 'rt']
 
 
 class AI_(turtle.Turtle):
@@ -13,9 +12,10 @@ class AI_(turtle.Turtle):
         self.Turtle = __turtle_
         actions = {}
         self.actions = actions
-        self._gen_values()
         func_params = {}
         good_functions = {}
+        prefs = {}
+        self.prefs = prefs
         self.good_functions = good_functions
         self.func_params = func_params
 
@@ -32,6 +32,14 @@ class AI_(turtle.Turtle):
         ##print (actions)
         ##print (options)
 
+    def _smart_gen_values(self):
+        actions = self.actions
+        prefs = self.prefs
+        freq = range(self.chance, 100)
+        if not(bool(actions)):
+            for i in turtle_functions:
+                actions[random.choice(freq)] = i
+
     def _param_needed(self, fun):
         if not(inspect.getargspec(fun)[0]) is None:
             needed_param = inspect.getargspec(fun)[0]
@@ -39,12 +47,17 @@ class AI_(turtle.Turtle):
         else:
             return False
 
+    def _file_empty(self, file):
+        return False if os.path.isfile(file) and os.path.getsize(file) > 0 else True
+
     def act(self, t):
+        self._gen_values()
         ##print(self.func_params)
-        #with open("P:/Python/AI/memory.txt", "rb") as f:
-        #    func_params = pickle.load(f)
-        #    self.func_params.update(func_params)
-        print(self.func_params)
+        if not(self._file_empty("memory.txt")):
+            with open("memory.txt", "rb") as f:
+                func_params = pickle.load(f)
+                self.func_params.update(func_params)
+        ##print(self.func_params)
         func_params = self.func_params
         r_time = 0
         actions = self.actions
@@ -75,10 +88,9 @@ class AI_(turtle.Turtle):
             time.sleep(0.5)
             r_time += 0.5
 
-        with open("P:/Python/AI/memory.txt", "wb") as f:
+        with open("memory.txt", "wb") as f:
             func_params = self.func_params
-            func_params = self.func_params
-            pickle.dump(self.func_params, f)
+            pickle.dump(func_params, f)
 
     def _working_param(self, fun, params):
         func_params = self.func_params
@@ -92,10 +104,10 @@ class AI_(turtle.Turtle):
                 if index == 0:
                     ##type == str
                     len_ = random.choice(range(3, 10))
-                    
+                    value = ""
                     for i in range(len_):
-                        value = chr(random.choice(strings))
-                        values.append(value)
+                        value += chr(random.choice(strings))
+                    values.append(value)
                 elif index == 1:
                     ##type == int
                     value = random.choice(range(1, 50))
@@ -109,50 +121,91 @@ class AI_(turtle.Turtle):
                     values.append(value)
 
         for index, i in enumerate(values):
-            good = False
             try:
                 fun(i)
                 ##func_params[fun] = i
                 ##print (i, 'i')
-                good = True
                 return i
             except:
                 pass
 
+    def get_ran_fun(self):
+        if not(self._file_empty("memory.txt")):
+            with open("memory.txt", "rb") as f:
+                ran_functs = pickle.load(f)
+                return ran_functs
 
     def get_prefs(self):
-        options = self.options
-        return options
+        if not(self._file_empty("prefs.txt")):
+            with open("prefs.txt", "rb") as p:
+                prefs = pickle.load(p)
+                return prefs
+        else:
+            return self.prefs
 
-    def get_func_params(self):
-        return self.func_params
-
-    def get_ran_fun(self):
-        with open("memory.txt", "rb") as f:
-            ran_functs = pickle.load(f)
-            return ran_functs
+    def save_stats(self, f_params=None, prefs=None):
+        assert (not(f_params is None) or not(prefs is None)),"Please specify object to save"
+        if not(f_params is None):
+            with open("params.txt", "wb") as f:
+                pickle.dump(self.func_params, f)
+        elif not(prefs is None):
+            with open("prefs.txt", "wb") as p:
+                pickle.dump(self.prefs, p)
 
     def smart_act(self, t):
-        with open("P:/Python/AI/memory.txt", "rb") as f:
-            func_params = pickle.load(f)
-            self.func_params.update(func_params)
+        prefs = self.prefs
+        self._smart_gen_values()
+        actions = self.actions # {fun_int: 'func_name'}
+        action_keys = actions.keys() # [fun_int]
+        action_values = actions.values() # ['func_name']
+        prev_x = self.Turtle.xcor()
+        prev_y = self.Turtle.ycor()
         func_params = self.func_params
-        good_functions = self.good_functions
-        options = self.options
-        actions = self.actions
+        chance = self.chance
         r_time = 0
-        while not (r_time > t):
-            #check if function moves AI_
+        if not(self._file_empty("params.txt")):
+            with open("params.txt", "rb") as f:
+                f_func_params = pickle.load(f)
+                func_params.update(f_func_params)
+        if not(self._file_empty("prefs.txt")):
+            with open("prefs.txt", "rb") as f:
+                f_prefs = pickle.load(f)
+                prefs.update(f_prefs)
 
+        while (r_time < t):
+            prev_x = self.Turtle.xcor()
+            prev_y = self.Turtle.ycor()
+            for i in prefs.values():
+                if i >= 1:
+                    ##prefer that option
+                    again = random.choice(range(i))
+            
+            action = random.choice(range(chance, 100))
+            ##print (action)
+            if (action in action_keys):
+                action_val = action
+                action = actions[action]
+                if not(self._param_needed(getattr(self.Turtle, action)) is False):
+                    needed_param = self._param_needed(getattr(self.Turtle, action))
+                    fun = getattr(self.Turtle, action)
+                    working_param = self._working_param(fun, needed_param)
+                    print (action, working_param)
+                    if type(self._working_param(fun, needed_param)) is int:
+                        if ((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)):
+                            ##print ("#MOVED")
+                            prefs[action] += 1
 
             time.sleep(0.5)
             r_time += 0.5
-        
+
+            
 
 
 screen = turtle.Screen()
 AI = AI_(10)
-AI.act(10)
-##print ("\n", AI.get_func_params())
+##AI.act(10)
+print (AI.get_prefs(), "\n")
+AI.smart_act(15)
+AI.save_stats(prefs="prefs.txt")
+print ("\n", AI.get_prefs())
 ##print ("\n", AI.get_ran_fun())
-##AI.smart_act(10)
