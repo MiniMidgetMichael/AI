@@ -203,6 +203,7 @@ class AI_(turtle.Turtle):
                         times += 1
                         again = True
             if again == True:
+                func_params[action] = working_param
                 continue
                         
             
@@ -221,7 +222,7 @@ class AI_(turtle.Turtle):
                             ##print ("#MOVED")
                             prefs[action] += 1
 
-
+            func_params[action] = working_param
             if not(again):
                 time.sleep(0.5)
                 times += 1
@@ -234,6 +235,6 @@ AI = AI_(10)
 ##AI.act(10)
 print (AI.get_prefs(), "\n")
 AI.smart_act(15)
-AI.save_stats(prefs="prefs.txt")
+AI.save_stats(prefs="prefs.txt", f_params="params.txt")
 print ("\n", AI.get_prefs())
-##print ("\n", AI.get_ran_fun())
+print ("\n" * 2, AI.get_ran_fun())
