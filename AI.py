@@ -230,11 +230,12 @@ class AI_(turtle.Turtle):
                 time.sleep(0.5)
 
 
-screen = turtle.Screen()
-AI = AI_(10)
-##AI.act(10)
-print (AI.get_prefs(), "\n")
-AI.smart_act(15)
-AI.save_stats(prefs="prefs.txt", f_params="params.txt")
-print ("\n", AI.get_prefs())
-print ("\n" * 2, AI.get_ran_fun())
+if __name__ == "__main__":
+    screen = turtle.Screen()
+    AI = AI_(10)
+    ##AI.act(10)
+    print (AI.get_prefs(), "\n")
+    AI.smart_act(15)
+    AI.save_stats(prefs="prefs.txt", f_params="params.txt")
+    print ("\n", AI.get_prefs())
+    print ("\n" * 2, AI.get_ran_fun())
