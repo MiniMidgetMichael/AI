@@ -94,6 +94,7 @@ class AI_(turtle.Turtle):
             pickle.dump(func_params, f)
 
     def _working_param(self, fun, params):
+        ##IF FUN HAS 2 PARAMS, IT GENERATES 2 PARAMS, THEN DOES FUN(PARAM_0), FUN(PARAM_1), PASSING ONLY 1 PARAM AT A TIME
         func_params = self.func_params
         rnd_value = random.choice(range(100))
         types = ['str', 'int', 'bool']
@@ -159,6 +160,9 @@ class AI_(turtle.Turtle):
         if again == act:
             ##prefers that option
             return True
+
+    def record_act(self, actions):
+        
 
     def smart_act(self, t):
         working_param = None
