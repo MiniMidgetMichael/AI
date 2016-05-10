@@ -45,9 +45,10 @@ class AI_goal_(object):
 
 
 
-if not(__name__) == "__main__":
-    goal = AI_goal_((300,-365))
-    ##goal >>> circle
-    ##goal >>> bottom-right corner
 
-    print (goal.get_coor())
+goal = AI_goal_((300,-365))
+##goal >>> circle
+##goal >>> bottom-right corner
+
+#print (goal.get_coor())
+

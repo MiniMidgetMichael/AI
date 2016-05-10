@@ -124,8 +124,6 @@ class AI_(turtle.Turtle):
         for index, i in enumerate(values):
             try:
                 fun(i)
-                ##func_params[fun] = i
-                ##print (i, 'i')
                 return i
             except:
                 pass
@@ -163,6 +161,7 @@ class AI_(turtle.Turtle):
             return True
 
     def smart_act(self, t):
+        working_param = None
         prefs = self.prefs
         self._smart_gen_values()
         actions = self.actions # {fun_int: 'func_name'}
@@ -238,5 +237,7 @@ if __name__ == "__main__":
     print (AI.get_prefs(), "\n")
     AI.smart_act(15)
     AI.save_stats(prefs="prefs.txt", f_params="params.txt")
-    print ("\n", AI.get_prefs())
-    print ("\n" * 2, AI.get_ran_fun())
+    print ("\n", "PREFS: ",AI.get_prefs())
+    print ("\n"*2)
+    print ("\n", "PARAMS: ",AI.get_ran_fun())
+    ##print ("\n" * 2, AI.get_ran_fun())
