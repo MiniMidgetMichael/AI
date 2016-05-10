@@ -1,5 +1,6 @@
 #! C:/Users/MichaelLFarwell/AppData/Local/Programs/Python/Python35-32/python.exe
 import random, math, turtle, time, inspect, pickle, os
+import AI_target as target
 
 turtle_functions = turtle._tg_turtle_functions
 
