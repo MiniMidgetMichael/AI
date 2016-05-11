@@ -131,34 +131,22 @@ class AI_(turtle.Turtle):
 
     def _new_working_param(self, fun, params):
         func_params = self.func_params
-        values = []
-        values_dict = {}
+        param_dict = {}
         w_params = {}
         n_params = len(params)
         strings = [i for i in range(0b01100001,0b01111010)]
-        for i in params:
-            values = []
-            for t in range(4):
-                if t == 0:
-                    ##typ == str
-                    len_ = random.choice(range(3,10))
-                    value = ""
-                    for l in range(len_):
-                        value += chr(random.choice(strings))
-                    values.append(value)
-                elif t == 1:
-                    ##typ == int
-                    value = random.choice(range(1,50))
-                    values.append(value)
-                elif t == 2:
-                    ##typ == bool
-                    value = random.choice(range(0,1))
-                    value = bool(value)
-                    values.append(value)
-                else:
-                    value = None
-                    values.append(value)
-            values_dict[i] = values
+        """EX:
+            fun = circle
+            params = ['radius', 'degrees'] >>> [<class 'int'>, <class 'int'>]
+
+            circle(radius,degrees=360)
+        """
+        for p in params:
+            if p != 'self':
+                param_dict.setdefault(p)
+        params = param_dict
+        print (params)
+        
         
 
 
@@ -252,9 +240,9 @@ class AI_(turtle.Turtle):
                 if not(self._param_needed(getattr(self.Turtle, action)) is False):
                     needed_param = self._param_needed(getattr(self.Turtle, action))
                     fun = getattr(self.Turtle, action)
-                    working_param = self._working_param(fun, needed_param)
+                    working_param = self._new_working_param(fun, needed_param)
                     print (action, working_param)
-                    if type(self._working_param(fun, needed_param)) is int:
+                    if type(self._new_working_param(fun, needed_param)) is int:
                         if ((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)):
                             ##print ("#MOVED")
                             prefs[action] += 1
