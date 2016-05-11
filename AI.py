@@ -121,13 +121,47 @@ class AI_(turtle.Turtle):
                     value = bool(value)
                     ##convert value to bool [i.e. 1 ==> True, 0 ==> False]
                     values.append(value)
-
         for index, i in enumerate(values):
             try:
                 fun(i)
                 return i
             except:
                 pass
+                
+
+    def _new_working_param(self, fun, params):
+        func_params = self.func_params
+        values = []
+        values_dict = {}
+        w_params = {}
+        n_params = len(params)
+        strings = [i for i in range(0b01100001,0b01111010)]
+        for i in params:
+            values = []
+            for t in range(4):
+                if t == 0:
+                    ##typ == str
+                    len_ = random.choice(range(3,10))
+                    value = ""
+                    for l in range(len_):
+                        value += chr(random.choice(strings))
+                    values.append(value)
+                elif t == 1:
+                    ##typ == int
+                    value = random.choice(range(1,50))
+                    values.append(value)
+                elif t == 2:
+                    ##typ == bool
+                    value = random.choice(range(0,1))
+                    value = bool(value)
+                    values.append(value)
+                else:
+                    value = None
+                    values.append(value)
+            values_dict[i] = values
+        
+
+
 
     def get_ran_fun(self):
         if not(self._file_empty("memory.txt")):
@@ -161,8 +195,7 @@ class AI_(turtle.Turtle):
             ##prefers that option
             return True
 
-    def record_act(self, actions):
-        
+
 
     def smart_act(self, t):
         working_param = None
@@ -198,9 +231,9 @@ class AI_(turtle.Turtle):
                         if not(self._param_needed(getattr(self.Turtle, action)) is False):
                             needed_param = self._param_needed(getattr(self.Turtle, action))
                             fun = getattr(self.Turtle, action)
-                            working_param = self._working_param(fun, needed_param)
+                            working_param = self._new_working_param(fun, needed_param)
                             print (action, working_param)
-                            if type(self._working_param(fun, needed_param)) is int:
+                            if type(self._new_working_param(fun, needed_param)) is int:
                                 if ((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)):
                                     ##print ("#MOVED")
                                     prefs[action] += 1
@@ -240,8 +273,8 @@ if __name__ == "__main__":
     ##AI.act(10)
     print (AI.get_prefs(), "\n")
     AI.smart_act(15)
-    AI.save_stats(prefs="prefs.txt", f_params="params.txt")
-    print ("\n", "PREFS: ",AI.get_prefs())
-    print ("\n"*2)
-    print ("\n", "PARAMS: ",AI.get_ran_fun())
+    #AI.save_stats(prefs="prefs.txt", f_params="params.txt")
+    #print ("\n", "PREFS: ",AI.get_prefs())
+    #print ("\n"*2)
+    #print ("\n", "PARAMS: ",AI.get_ran_fun())
     ##print ("\n" * 2, AI.get_ran_fun())
