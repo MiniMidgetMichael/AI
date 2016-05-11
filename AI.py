@@ -135,6 +135,7 @@ class AI_(turtle.Turtle):
         w_params = {}
         n_params = len(params)
         strings = [i for i in range(0b01100001,0b01111010)]
+        values = {} # for each param, gen: str, int, bool value
         """EX:
             fun = circle
             params = ['radius', 'degrees'] >>> [<class 'int'>, <class 'int'>]
@@ -145,6 +146,15 @@ class AI_(turtle.Turtle):
             if p != 'self':
                 param_dict.setdefault(p)
         params = param_dict
+        
+        for i in params:
+            for typ in range(3):
+                ## 0 >>> str
+                ## 1 >>> int
+                ## 2 >>> bool
+                if typ == 0:
+                    
+        
         print (params)
         
         
