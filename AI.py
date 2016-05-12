@@ -133,7 +133,6 @@ class AI_(turtle.Turtle):
     def _new_working_param(self, fun, params):
         func_params = self.func_params
         param_dict = {}
-        w_params = {}
         n_params = len(params)
         strings = [i for i in range(0b01100001,0b01111010)]
         values = {} # for each param, gen: str, int, bool value
@@ -146,7 +145,7 @@ class AI_(turtle.Turtle):
             circle(radius,degrees=360)
         """
         for p in params:
-            if p != 'self':
+            if (p != 'self') and (p != None):
                 param_dict.setdefault(p)
         params = param_dict
         
