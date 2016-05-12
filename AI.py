@@ -1,6 +1,7 @@
 #! C:/Users/MichaelLFarwell/AppData/Local/Programs/Python/Python35-32/python.exe
 import random, math, turtle, time, inspect, pickle, os
 import AI_target as target
+from itertools import permutations as perm
 
 turtle_functions = turtle._tg_turtle_functions
 
@@ -136,6 +137,8 @@ class AI_(turtle.Turtle):
         n_params = len(params)
         strings = [i for i in range(0b01100001,0b01111010)]
         values = {} # for each param, gen: str, int, bool value
+        total_values = []
+        ##print ("fun: ", fun, "# of params: ",n_params)
         """EX:
             fun = circle
             params = ['radius', 'degrees'] >>> [<class 'int'>, <class 'int'>]
@@ -148,14 +151,52 @@ class AI_(turtle.Turtle):
         params = param_dict
         
         for i in params:
+            values.setdefault(i, [None, None, None])
             for typ in range(3):
                 ## 0 >>> str
                 ## 1 >>> int
                 ## 2 >>> bool
                 if typ == 0:
-                    
+                    ## str
+                    len_ = random.choice(range(3,10))
+                    str_value = ""
+                    for s in range(len_):
+                        str_value += chr(random.choice(strings))
+                    values[i][0] = str_value
+                if typ == 1:
+                    ## int
+                    int_value = random.choice(range(1,50))
+                    values[i][1] = int_value
+                elif typ == 2:
+                    ## bool
+                    bool_value = bool(random.choice(range(2)))
+                    values[i][2] = bool_value
         
-        print (params)
+        """print (values) >>> {
+            'param_0' : ['abc', 012, True],
+            'param_1' : ['cde', 345, False]
+            }
+        """
+        """print (params) >>> {
+            'param_0' : None,
+            'param_1' : None
+            }
+        """
+        for v in values.values():
+            for i in v:
+                total_values.append(i)
+
+        """print (total_values) >>> ['abc',012,True,'cde',345,False]"""
+        ##permutations(iterable[, r]) --> permutations object
+        ##print (list(perm(total_values,2)))
+        perms = perm(total_values,n_params-1)
+
+        for p in perms:
+            try:
+                fun(*p)
+                return [*p]
+            except:
+                pass
         
         
 
@@ -231,10 +272,9 @@ class AI_(turtle.Turtle):
                             fun = getattr(self.Turtle, action)
                             working_param = self._new_working_param(fun, needed_param)
                             print (action, working_param)
-                            if type(self._new_working_param(fun, needed_param)) is int:
-                                if ((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)):
-                                    ##print ("#MOVED")
-                                    prefs[action] += 1
+                            if ((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)):
+                                ##print ("#MOVED")
+                                prefs[action] += 1
                         times += 1
                         again = True
             if again == True:
@@ -252,10 +292,9 @@ class AI_(turtle.Turtle):
                     fun = getattr(self.Turtle, action)
                     working_param = self._new_working_param(fun, needed_param)
                     print (action, working_param)
-                    if type(self._new_working_param(fun, needed_param)) is int:
-                        if ((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)):
-                            ##print ("#MOVED")
-                            prefs[action] += 1
+                    if ((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)):
+                        ##print ("#MOVED")
+                        prefs[action] += 1
 
             func_params[action] = working_param
             if not(again):
