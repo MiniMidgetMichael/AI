@@ -271,9 +271,13 @@ class AI_(turtle.Turtle):
                             fun = getattr(self.Turtle, action)
                             working_param = self._new_working_param(fun, needed_param)
                             print (action, working_param)
-                            if (((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)) and (self.Turtle.xcor() != 0 and self.Turtle.ycor() != 0)):
-                                ##print ("#MOVED")
-                                prefs[action] += 1
+                            if (((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y))):
+                                if (self.Turtle.xcor() != 0) and (self.Turtle.ycor() != 0):
+                                    ##print ("#MOVED")
+                                    print (self.Turtle.xcor(), self.Turtle.ycor())
+                                    prefs[action] += 1
+                                elif (action in prefs) and prefs[action] > 1:
+                                    prefs[action] -= 1
                         times += 1
                         again = True
             if again == True:
