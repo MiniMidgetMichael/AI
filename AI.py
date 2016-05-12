@@ -211,12 +211,13 @@ class AI_(turtle.Turtle):
         if not(self._file_empty("prefs.txt")):
             with open("prefs.txt", "rb") as p:
                 prefs = pickle.load(p)
+                self.prefs.update(prefs)
                 return prefs
         else:
             return self.prefs
 
     def save_stats(self, f_params=None, prefs=None):
-        assert (not(f_params is None) or not(prefs is None)),"Please specify object to save"
+        assert (not((f_params is None) and (prefs is None))),"Please specify object to save"
         if not(f_params is None):
             with open("params.txt", "wb") as f:
                 pickle.dump(self.func_params, f)
@@ -293,7 +294,13 @@ class AI_(turtle.Turtle):
                     print (action, working_param)
                     if ((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)):
                         ##print ("#MOVED")
-                        prefs[action] += 1
+                        if action in prefs:
+                            prefs[action] += 1
+                        else:
+                            prefs[action] = 1
+                    else:
+                        if not(action in prefs):
+                            prefs[action] = 0
 
             func_params[action] = working_param
             if not(again):
@@ -307,10 +314,10 @@ if __name__ == "__main__":
     screen = turtle.Screen()
     AI = AI_(10)
     ##AI.act(10)
-    print (AI.get_prefs(), "\n")
+    print ("PREFS: ",AI.get_prefs())
     AI.smart_act(15)
-    AI.save_stats(prefs="prefs.txt", f_params="params.txt")
-    #print ("\n", "PREFS: ",AI.get_prefs())
+    AI.save_stats(f_params="params.txt", prefs="prefs.txt")
+    print ("PREFS: ",AI.get_prefs())
     #print ("\n"*2)
     #print ("\n", "PARAMS: ",AI.get_ran_fun())
     ##print ("\n" * 2, AI.get_ran_fun())
