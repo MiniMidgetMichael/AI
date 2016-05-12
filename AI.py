@@ -309,7 +309,7 @@ if __name__ == "__main__":
     ##AI.act(10)
     print (AI.get_prefs(), "\n")
     AI.smart_act(15)
-    #AI.save_stats(prefs="prefs.txt", f_params="params.txt")
+    AI.save_stats(prefs="prefs.txt", f_params="params.txt")
     #print ("\n", "PREFS: ",AI.get_prefs())
     #print ("\n"*2)
     #print ("\n", "PARAMS: ",AI.get_ran_fun())
