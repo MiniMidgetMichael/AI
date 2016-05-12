@@ -214,16 +214,15 @@ class AI_(turtle.Turtle):
                 self.prefs.update(prefs)
                 return prefs
         else:
+            print ("prefs.txt file is empty")
             return self.prefs
 
     def save_stats(self, f_params=None, prefs=None):
         assert (not((f_params is None) and (prefs is None))),"Please specify object to save"
-        if not(f_params is None):
-            with open("params.txt", "wb") as f:
-                pickle.dump(self.func_params, f)
-        elif not(prefs is None):
-            with open("prefs.txt", "wb") as p:
-                pickle.dump(self.prefs, p)
+        with open(f_params, "wb") as f:
+            pickle.dump(self.func_params, f)
+        with open(prefs, "wb") as p:
+            pickle.dump(self.prefs, p)
 
     def _run_again(self, act):
         chance = self.chance
@@ -318,6 +317,3 @@ if __name__ == "__main__":
     AI.smart_act(15)
     AI.save_stats(f_params="params.txt", prefs="prefs.txt")
     print ("PREFS: ",AI.get_prefs())
-    #print ("\n"*2)
-    #print ("\n", "PARAMS: ",AI.get_ran_fun())
-    ##print ("\n" * 2, AI.get_ran_fun())
