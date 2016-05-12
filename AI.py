@@ -1,6 +1,7 @@
 #! C:/Users/MichaelLFarwell/AppData/Local/Programs/Python/Python35-32/python.exe
 import random, math, turtle, time, inspect, pickle, os
 import AI_target as target
+from itertools import permutations as perm
 
 turtle_functions = turtle._tg_turtle_functions
 
@@ -137,6 +138,7 @@ class AI_(turtle.Turtle):
         strings = [i for i in range(0b01100001,0b01111010)]
         values = {} # for each param, gen: str, int, bool value
         good_params = False
+        total_values = []
         """EX:
             fun = circle
             params = ['radius', 'degrees'] >>> [<class 'int'>, <class 'int'>]
@@ -180,6 +182,22 @@ class AI_(turtle.Turtle):
             'param_1' : None
             }
         """
+        for v in values.values():
+            for i in v:
+                total_values.append(i)
+
+        """print (total_values) >>> ['abc',012,True,'cde',345,False]"""
+        ##permutations(iterable[, r]) --> permutations object
+        ##print (list(perm(total_values,2)))
+        perms = perm(total_values,2)
+
+        for p in perms:
+            try:
+                fun(*p)
+                ##print (p)
+                return p
+            except:
+                pass
         
         
 
