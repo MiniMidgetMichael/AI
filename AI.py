@@ -137,8 +137,8 @@ class AI_(turtle.Turtle):
         n_params = len(params)
         strings = [i for i in range(0b01100001,0b01111010)]
         values = {} # for each param, gen: str, int, bool value
-        good_params = False
         total_values = []
+        ##print ("fun: ", fun, "# of params: ",n_params)
         """EX:
             fun = circle
             params = ['radius', 'degrees'] >>> [<class 'int'>, <class 'int'>]
@@ -189,13 +189,12 @@ class AI_(turtle.Turtle):
         """print (total_values) >>> ['abc',012,True,'cde',345,False]"""
         ##permutations(iterable[, r]) --> permutations object
         ##print (list(perm(total_values,2)))
-        perms = perm(total_values,2)
-
+        perms = perm(total_values,n_params-1)
+        
         for p in perms:
             try:
                 fun(*p)
-                ##print (p)
-                return p
+                return [*p]
             except:
                 pass
         
@@ -273,10 +272,9 @@ class AI_(turtle.Turtle):
                             fun = getattr(self.Turtle, action)
                             working_param = self._new_working_param(fun, needed_param)
                             print (action, working_param)
-                            if type(self._new_working_param(fun, needed_param)) is int:
-                                if ((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)):
-                                    ##print ("#MOVED")
-                                    prefs[action] += 1
+                            if ((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)):
+                                ##print ("#MOVED")
+                                prefs[action] += 1
                         times += 1
                         again = True
             if again == True:
@@ -294,10 +292,9 @@ class AI_(turtle.Turtle):
                     fun = getattr(self.Turtle, action)
                     working_param = self._new_working_param(fun, needed_param)
                     print (action, working_param)
-                    if type(self._new_working_param(fun, needed_param)) is int:
-                        if ((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)):
-                            ##print ("#MOVED")
-                            prefs[action] += 1
+                    if ((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)):
+                        ##print ("#MOVED")
+                        prefs[action] += 1
 
             func_params[action] = working_param
             if not(again):
