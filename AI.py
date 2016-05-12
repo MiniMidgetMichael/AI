@@ -274,7 +274,7 @@ class AI_(turtle.Turtle):
                             if (((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y))):
                                 if (self.Turtle.xcor() != 0) and (self.Turtle.ycor() != 0):
                                     ##print ("#MOVED")
-                                    print (self.Turtle.xcor(), self.Turtle.ycor())
+                                    print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
                                     prefs[action] += 1
                                 elif (action in prefs) and prefs[action] > 1:
                                     prefs[action] -= 1
@@ -295,15 +295,13 @@ class AI_(turtle.Turtle):
                     fun = getattr(self.Turtle, action)
                     working_param = self._new_working_param(fun, needed_param)
                     print (action, working_param)
-                    if ((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)):
-                        ##print ("#MOVED")
-                        if action in prefs:
+                    if (((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y))):
+                        if (self.Turtle.xcor() != 0) and (self.Turtle.ycor() != 0):
+                            ##print ("#MOVED")
+                            print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
                             prefs[action] += 1
-                        else:
-                            prefs[action] = 1
-                    else:
-                        if not(action in prefs):
-                            prefs[action] = 0
+                        elif (action in prefs) and prefs[action] > 0:
+                            prefs[action] -= 1
 
             func_params[action] = working_param
             if not(again):
@@ -318,6 +316,6 @@ if __name__ == "__main__":
     AI = AI_(10)
     ##AI.act(10)
     print ("PREFS: ",AI.get_prefs())
-    AI.smart_act(15)
+    AI.smart_act(50)
     AI.save_stats(f_params="params.txt", prefs="prefs.txt")
     print ("PREFS: ",AI.get_prefs())
