@@ -271,7 +271,7 @@ class AI_(turtle.Turtle):
                             fun = getattr(self.Turtle, action)
                             working_param = self._new_working_param(fun, needed_param)
                             print (action, working_param)
-                            if ((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)):
+                            if (((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)) and (self.Turtle.xcor() != 0 and self.Turtle.ycor() != 0)):
                                 ##print ("#MOVED")
                                 prefs[action] += 1
                         times += 1
