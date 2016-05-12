@@ -136,6 +136,7 @@ class AI_(turtle.Turtle):
         n_params = len(params)
         strings = [i for i in range(0b01100001,0b01111010)]
         values = {} # for each param, gen: str, int, bool value
+        good_params = False
         """EX:
             fun = circle
             params = ['radius', 'degrees'] >>> [<class 'int'>, <class 'int'>]
@@ -148,14 +149,37 @@ class AI_(turtle.Turtle):
         params = param_dict
         
         for i in params:
+            values.setdefault(i, [None, None, None])
             for typ in range(3):
                 ## 0 >>> str
                 ## 1 >>> int
                 ## 2 >>> bool
                 if typ == 0:
-                    
+                    ## str
+                    len_ = random.choice(range(3,10))
+                    str_value = ""
+                    for s in range(len_):
+                        str_value += chr(random.choice(strings))
+                    values[i][0] = str_value
+                if typ == 1:
+                    ## int
+                    int_value = random.choice(range(1,50))
+                    values[i][1] = int_value
+                elif typ == 2:
+                    ## bool
+                    bool_value = bool(random.choice(range(2)))
+                    values[i][2] = bool_value
         
-        print (params)
+        """print (values) >>> {
+            'param_0' : ['abc', 012, True],
+            'param_1' : ['cde', 345, False]
+            }
+        """
+        """print (params) >>> {
+            'param_0' : None,
+            'param_1' : None
+            }
+        """
         
         
 
