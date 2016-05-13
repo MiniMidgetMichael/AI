@@ -16,8 +16,5 @@ The 'AI' then generates random numbers, if the number matches any of the functio
 <li>divide act() into 3 methods
 <li>add end goal for AI
 <li>find a way to properly generate string parameters
-<<<<<<< HEAD
 <li>fix 'parameter-finder' method
-=======
 <li>fix 'parameter-finder' method [done(?)]
->>>>>>> refs/remotes/origin/End_Goal_Edits
