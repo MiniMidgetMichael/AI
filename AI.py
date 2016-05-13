@@ -1,5 +1,7 @@
 #! C:/Users/MichaelLFarwell/AppData/Local/Programs/Python/Python35-32/python.exe
 import random, math, turtle, time, inspect, pickle, os
+import AI_target as target
+from itertools import permutations as perm
 
 turtle_functions = turtle._tg_turtle_functions
 
@@ -93,6 +95,7 @@ class AI_(turtle.Turtle):
             pickle.dump(func_params, f)
 
     def _working_param(self, fun, params):
+        ##IF FUN HAS 2 PARAMS, IT GENERATES 2 PARAMS, THEN DOES FUN(PARAM_0), FUN(PARAM_1), PASSING ONLY 1 PARAM AT A TIME
         func_params = self.func_params
         rnd_value = random.choice(range(100))
         types = ['str', 'int', 'bool']
@@ -119,15 +122,84 @@ class AI_(turtle.Turtle):
                     value = bool(value)
                     ##convert value to bool [i.e. 1 ==> True, 0 ==> False]
                     values.append(value)
-
         for index, i in enumerate(values):
             try:
                 fun(i)
-                ##func_params[fun] = i
-                ##print (i, 'i')
                 return i
             except:
                 pass
+                
+
+    def _new_working_param(self, fun, params):
+        func_params = self.func_params
+        param_dict = {}
+        n_params = len(params)
+        strings = [i for i in range(0b01100001,0b01111010)]
+        values = {} # for each param, gen: str, int, bool value
+        total_values = []
+        ##print ("fun: ", fun, "# of params: ",n_params)
+        """EX:
+            fun = circle
+            params = ['radius', 'degrees'] >>> [<class 'int'>, <class 'int'>]
+
+            circle(radius,degrees=360)
+        """
+        for p in params:
+            if (p != 'self') and (p != None):
+                param_dict.setdefault(p)
+        params = param_dict
+        
+        for i in params:
+            values.setdefault(i, [None, None, None])
+            for typ in range(3):
+                ## 0 >>> str
+                ## 1 >>> int
+                ## 2 >>> bool
+                if typ == 0:
+                    ## str
+                    len_ = random.choice(range(3,10))
+                    str_value = ""
+                    for s in range(len_):
+                        str_value += chr(random.choice(strings))
+                    values[i][0] = str_value
+                if typ == 1:
+                    ## int
+                    int_value = random.choice(range(1,50))
+                    values[i][1] = int_value
+                elif typ == 2:
+                    ## bool
+                    bool_value = bool(random.choice(range(2)))
+                    values[i][2] = bool_value
+        
+        """print (values) >>> {
+            'param_0' : ['abc', 012, True],
+            'param_1' : ['cde', 345, False]
+            }
+        """
+        """print (params) >>> {
+            'param_0' : None,
+            'param_1' : None
+            }
+        """
+        for v in values.values():
+            for i in v:
+                total_values.append(i)
+
+        """print (total_values) >>> ['abc',012,True,'cde',345,False]"""
+        ##permutations(iterable[, r]) --> permutations object
+        ##print (list(perm(total_values,2)))
+        perms = perm(total_values,n_params-1)
+
+        for p in perms:
+            try:
+                fun(*p)
+                return [*p]
+            except:
+                pass
+        
+        
+
+
 
     def get_ran_fun(self):
         if not(self._file_empty("memory.txt")):
@@ -139,18 +211,18 @@ class AI_(turtle.Turtle):
         if not(self._file_empty("prefs.txt")):
             with open("prefs.txt", "rb") as p:
                 prefs = pickle.load(p)
+                self.prefs.update(prefs)
                 return prefs
         else:
+            print ("prefs.txt file is empty")
             return self.prefs
 
     def save_stats(self, f_params=None, prefs=None):
-        assert (not(f_params is None) or not(prefs is None)),"Please specify object to save"
-        if not(f_params is None):
-            with open("params.txt", "wb") as f:
-                pickle.dump(self.func_params, f)
-        elif not(prefs is None):
-            with open("prefs.txt", "wb") as p:
-                pickle.dump(self.prefs, p)
+        assert (not((f_params is None) and (prefs is None))),"Please specify object to save"
+        with open(f_params, "wb") as f:
+            pickle.dump(self.func_params, f)
+        with open(prefs, "wb") as p:
+            pickle.dump(self.prefs, p)
 
     def _run_again(self, act):
         chance = self.chance
@@ -161,7 +233,10 @@ class AI_(turtle.Turtle):
             ##prefers that option
             return True
 
+
+
     def smart_act(self, t):
+        working_param = None
         prefs = self.prefs
         self._smart_gen_values()
         actions = self.actions # {fun_int: 'func_name'}
@@ -194,12 +269,15 @@ class AI_(turtle.Turtle):
                         if not(self._param_needed(getattr(self.Turtle, action)) is False):
                             needed_param = self._param_needed(getattr(self.Turtle, action))
                             fun = getattr(self.Turtle, action)
-                            working_param = self._working_param(fun, needed_param)
+                            working_param = self._new_working_param(fun, needed_param)
                             print (action, working_param)
-                            if type(self._working_param(fun, needed_param)) is int:
-                                if ((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)):
+                            if (((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y))):
+                                if (self.Turtle.xcor() != 0) and (self.Turtle.ycor() != 0):
                                     ##print ("#MOVED")
+                                    print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
                                     prefs[action] += 1
+                                elif (action in prefs) and prefs[action] > 1:
+                                    prefs[action] -= 1
                         times += 1
                         again = True
             if again == True:
@@ -215,12 +293,15 @@ class AI_(turtle.Turtle):
                 if not(self._param_needed(getattr(self.Turtle, action)) is False):
                     needed_param = self._param_needed(getattr(self.Turtle, action))
                     fun = getattr(self.Turtle, action)
-                    working_param = self._working_param(fun, needed_param)
+                    working_param = self._new_working_param(fun, needed_param)
                     print (action, working_param)
-                    if type(self._working_param(fun, needed_param)) is int:
-                        if ((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y)):
+                    if (((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y))):
+                        if (self.Turtle.xcor() != 0) and (self.Turtle.ycor() != 0):
                             ##print ("#MOVED")
+                            print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
                             prefs[action] += 1
+                        elif (action in prefs) and prefs[action] > 0:
+                            prefs[action] -= 1
 
             func_params[action] = working_param
             if not(again):
@@ -230,11 +311,11 @@ class AI_(turtle.Turtle):
                 time.sleep(0.5)
 
 
-screen = turtle.Screen()
-AI = AI_(10)
-##AI.act(10)
-print (AI.get_prefs(), "\n")
-AI.smart_act(15)
-AI.save_stats(prefs="prefs.txt", f_params="params.txt")
-print ("\n", AI.get_prefs())
-print ("\n" * 2, AI.get_ran_fun())
+if __name__ == "__main__":
+    screen = turtle.Screen()
+    AI = AI_(10)
+    ##AI.act(10)
+    print ("PREFS: ",AI.get_prefs())
+    AI.smart_act(50)
+    AI.save_stats(f_params="params.txt", prefs="prefs.txt")
+    print ("PREFS: ",AI.get_prefs())
