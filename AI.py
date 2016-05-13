@@ -2,6 +2,7 @@
 import random, math, turtle, time, inspect, pickle, os, sys
 import AI_target as target
 from itertools import permutations as perm
+from modules import functions
 
 turtle_functions = turtle._tg_turtle_functions
 
@@ -340,7 +341,7 @@ def cycle(acts, cycles):
 if __name__ == "__main__":
     screen = turtle.Screen()
     AI = AI_(10)
-    acts = methods.good_input("How many actions per cycle? [up to 50]:", [i for i in range(50)])
-    cycles = method.good_input("How many cycles? [up to 10]:", [i for i in range(10)])
+    acts = int(functions.good_input("How many actions per cycle? [up to 50]:", values=[str(i) for i in range(50)]))
+    cycles = int(functions.good_input("How many cycles? [up to 10]:", values=[str(i) for i in range(10)]))
     cycle(acts, cycles)
 
