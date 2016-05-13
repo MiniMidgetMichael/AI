@@ -1,5 +1,5 @@
 #! C:/Users/MichaelLFarwell/AppData/Local/Programs/Python/Python35-32/python.exe
-import random, math, turtle, time, inspect, pickle, os
+import random, math, turtle, time, inspect, pickle, os, sys, methods
 import AI_target as target
 from itertools import permutations as perm
 
@@ -263,6 +263,8 @@ class AI_(turtle.Turtle):
         prev_x = self.Turtle.xcor()
         prev_y = self.Turtle.ycor()
         while (times < t):
+            curr_x = None
+            curr_y = None
             again = False
 
 
@@ -327,12 +329,18 @@ class AI_(turtle.Turtle):
             prev_y = curr_y
 
 
-if __name__ == "__main__":
-    screen = turtle.Screen()
-    AI = AI_(10)
-    ##AI.act(10)
+def cycle(acts, cycles):
     print ("PREFS: ",AI.get_prefs())
     AI.smart_act(50)
     AI.save_stats(f_params="params.txt", prefs="prefs.txt")
     print ("PREFS: ",AI.get_prefs())
     print ("REC_POSITIONS: ", AI.rec_positions)
+
+
+if __name__ == "__main__":
+    screen = turtle.Screen()
+    AI = AI_(10)
+    acts = methods.good_input("How many actions per cycle? [up to 50]:", [i for i in range(50)])
+    cycles = method.good_input("How many cycles? [up to 10]:", [i for i in range(10)])
+    cycle(acts, cycles)
+
