@@ -2,7 +2,6 @@
 import random, math, turtle, time, inspect, pickle, os, sys
 import AI_target as target
 from itertools import permutations as perm
-from python.methods import good_input
 
 turtle_functions = turtle._tg_turtle_functions
 
