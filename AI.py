@@ -20,6 +20,8 @@ class AI_(turtle.Turtle):
         self.prefs = prefs
         self.good_functions = good_functions
         self.func_params = func_params
+        rec_positions = []
+        self.rec_positions = rec_positions
 
     def _gen_values(self):
         actions = self.actions
@@ -257,10 +259,13 @@ class AI_(turtle.Turtle):
                 f_prefs = pickle.load(f)
                 prefs.update(f_prefs)
 
+        rec_positions = self.rec_positions
+        prev_x = self.Turtle.xcor()
+        prev_y = self.Turtle.ycor()
         while (times < t):
             again = False
-            prev_x = self.Turtle.xcor()
-            prev_y = self.Turtle.ycor()
+
+
             for k,v in prefs.items():
                 if v >= 1:
                     if self._run_again(v) == True:
@@ -271,13 +276,16 @@ class AI_(turtle.Turtle):
                             fun = getattr(self.Turtle, action)
                             working_param = self._new_working_param(fun, needed_param)
                             print (action, working_param)
-                            if (((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y))):
-                                if (self.Turtle.xcor() != 0) and (self.Turtle.ycor() != 0):
-                                    ##print ("#MOVED")
-                                    print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
-                                    prefs[action] += 1
-                                elif (action in prefs) and prefs[action] > 1:
-                                    prefs[action] -= 1
+                            curr_x = self.Turtle.xcor()
+                            curr_y = self.Turtle.ycor()
+                            curr_pos = [curr_x, curr_y]
+                            if not(curr_pos in rec_positions):
+                                ##if self.Turtle hasn't been in current pos, record it
+                                rec_positions.append(curr_pos)
+                                ##print ("#MOVED")
+                                print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
+                                prefs[action] += 1
+
                         times += 1
                         again = True
             if again == True:
@@ -295,13 +303,18 @@ class AI_(turtle.Turtle):
                     fun = getattr(self.Turtle, action)
                     working_param = self._new_working_param(fun, needed_param)
                     print (action, working_param)
-                    if (((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y))):
-                        if (self.Turtle.xcor() != 0) and (self.Turtle.ycor() != 0):
-                            ##print ("#MOVED")
-                            print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
+                    curr_x = self.Turtle.xcor()
+                    curr_y = self.Turtle.ycor()
+                    curr_pos = [curr_x, curr_y]
+                    if not(curr_pos in rec_positions):
+                        ##if self.Turtle hasn't been in current pos, record it
+                        rec_positions.append(curr_pos)
+                        ##print ("#MOVED")
+                        print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
+                        if not(action in prefs):
+                            prefs.setdefault(action, 0)
+                        else:
                             prefs[action] += 1
-                        elif (action in prefs) and prefs[action] > 0:
-                            prefs[action] -= 1
 
             func_params[action] = working_param
             if not(again):
@@ -309,6 +322,9 @@ class AI_(turtle.Turtle):
                 times += 1
             else:
                 time.sleep(0.5)
+
+            prev_x = curr_x
+            prev_y = curr_y
 
 
 if __name__ == "__main__":
@@ -319,3 +335,4 @@ if __name__ == "__main__":
     AI.smart_act(50)
     AI.save_stats(f_params="params.txt", prefs="prefs.txt")
     print ("PREFS: ",AI.get_prefs())
+    print ("REC_POSITIONS: ", AI.rec_positions)
