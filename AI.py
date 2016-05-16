@@ -249,7 +249,7 @@ class AI_(turtle.Turtle):
             return True
 
     def _good_cycle(self, cycle):
-        assert (type(cycle) is dict),"cycle must be of <class 'dict'> with structure: {'func' : 'param'}, not %s" % type(cycle)
+        assert (type(cycle) is list),"cycle must be of <class 'list'> with structure: [['func', 'param'], ['func1', 'param1']], not %s" % type(cycle)
 
 
     def smart_act(self, t):
@@ -265,6 +265,7 @@ class AI_(turtle.Turtle):
         chance = self.chance
         times = 0
         again = False
+        cycle = []
         if not(self._file_empty("params.txt")):
             with open("params.txt", "rb") as f:
                 f_func_params = pickle.load(f)
@@ -307,7 +308,7 @@ class AI_(turtle.Turtle):
                         times += 1
                         again = True
             if again == True:
-                print ("\n", "#PREVENTING AI FROM HIDING", "\n") 
+                cycle.append([action, working_param])
                 func_params[action] = working_param
                 continue
                         
@@ -318,6 +319,7 @@ class AI_(turtle.Turtle):
                 action_val = action
                 action = actions[action]
                 if ((action == 'hideturtle') or (action == 'ht')):
+                    print ("\n", "#PREVENTING AI FROM HIDING", "\n")
                     times -= 1
                     continue
                 if not(self._param_needed(getattr(self.Turtle, action)) is False):
@@ -339,6 +341,7 @@ class AI_(turtle.Turtle):
                             prefs[action] += 1
 
             func_params[action] = working_param
+            cycle.append([action, working_param])
             if not(again):
                 time.sleep(0.5)
                 times += 1
