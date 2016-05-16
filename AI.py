@@ -250,12 +250,13 @@ class AI_(turtle.Turtle):
 
     def _good_cycle(self, cycle, positions):
         assert (type(cycle) is list),"cycle must be of <class 'list'> with structure: [['func', 'param'], ['func1', 'param1']], not %s" % type(cycle)
-        assert (type(positions) is list),"positions must be of <class 'list'>"
+        assert (type(positions) is list),"positions must be of <class 'list'> with structure: [['func', [x_cor, y_cor]]], not %s" % type(positions)
         goal_loc = goal.get_coor()
         print ("\n", "#CYCLE: ", cycle, "\n")
         print ("\n", "#POSITIONS: ", positions, "\n")
         ##print ("\n", "#len(cycle)", len(cycle), "\n")
         ##print ("\n", "#len(positions)", len(positions), "\n")
+        
 
 
     def smart_act(self, t):
