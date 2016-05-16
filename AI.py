@@ -220,6 +220,17 @@ class AI_(turtle.Turtle):
             print ("prefs.txt file is empty")
             return self.prefs
 
+    def get_params(self):
+        if not(self._file_empty("params.txt")):
+            with open("prefs.txt", "rb") as f:
+                params = pickle.load(f)
+                self.func_params.update(params)
+                return self.func_params
+        elif bool(self.func_params):
+            return self.func_params
+        else:
+            print ("Please run AI at least once to get function parameters")
+
     def save_stats(self, f_params=None, prefs=None):
         assert (not((f_params is None) and (prefs is None))),"Please specify object to save"
         with open(f_params, "wb") as f:
@@ -332,7 +343,7 @@ class AI_(turtle.Turtle):
 
 def cycle(acts, cycles):
     print ("PREFS: ",AI.get_prefs())
-    AI.smart_act(50)
+    AI.smart_act(acts)
     AI.save_stats(f_params="params.txt", prefs="prefs.txt")
     print ("PREFS: ",AI.get_prefs())
     print ("REC_POSITIONS: ", AI.rec_positions)
@@ -341,7 +352,7 @@ def cycle(acts, cycles):
 if __name__ == "__main__":
     screen = turtle.Screen()
     AI = AI_(10)
-    acts = int(functions.good_input("How many actions per cycle? [up to 50]:", values=[str(i) for i in range(50)]))
-    cycles = int(functions.good_input("How many cycles? [up to 10]:", values=[str(i) for i in range(10)]))
+    acts = int(functions.good_input("How many actions per cycle? [up to 50]:", values=[str(i) for i in range(1,51)]))
+    cycles = int(functions.good_input("How many cycles? [up to 10]:", values=[str(i) for i in range(1,11)]))
     cycle(acts, cycles)
 
