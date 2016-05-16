@@ -342,6 +342,11 @@ class AI_(turtle.Turtle):
             prev_y = curr_y
 
 
+"""
+    END OF CLASS
+"""
+
+
 def cycle(acts, cycles):
     print ("PREFS: ",AI.get_prefs())
     AI.smart_act(acts)
