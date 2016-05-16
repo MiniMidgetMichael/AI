@@ -307,6 +307,7 @@ class AI_(turtle.Turtle):
                         times += 1
                         again = True
             if again == True:
+                print ("\n", "#PREVENTING AI FROM HIDING", "\n") 
                 func_params[action] = working_param
                 continue
                         
@@ -316,6 +317,9 @@ class AI_(turtle.Turtle):
             if (action in action_keys):
                 action_val = action
                 action = actions[action]
+                if ((action == 'hideturtle') or (action == 'ht')):
+                    times -= 1
+                    continue
                 if not(self._param_needed(getattr(self.Turtle, action)) is False):
                     needed_param = self._param_needed(getattr(self.Turtle, action))
                     fun = getattr(self.Turtle, action)
