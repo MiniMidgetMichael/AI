@@ -248,8 +248,12 @@ class AI_(turtle.Turtle):
             ##prefers that option
             return True
 
-    def _good_cycle(self, cycle):
+    def _good_cycle(self, cycle, positions):
         assert (type(cycle) is list),"cycle must be of <class 'list'> with structure: [['func', 'param'], ['func1', 'param1']], not %s" % type(cycle)
+        assert (type(positions) is list),"positions must be of <class 'list'>"
+        goal_loc = goal.get_coor()
+        print ("\n", "#CYCLE: ", cycle, "\n")
+        print ("\n", "#POSITIONS: ", positions, "\n")
 
 
     def smart_act(self, t):
@@ -318,6 +322,7 @@ class AI_(turtle.Turtle):
             if (action in action_keys):
                 action_val = action
                 action = actions[action]
+                cycle.append([action, working_param])
                 if ((action == 'hideturtle') or (action == 'ht')):
                     print ("\n", "#PREVENTING AI FROM HIDING", "\n")
                     times -= 1
@@ -341,7 +346,6 @@ class AI_(turtle.Turtle):
                             prefs[action] += 1
 
             func_params[action] = working_param
-            cycle.append([action, working_param])
             if not(again):
                 time.sleep(0.5)
                 times += 1
@@ -350,6 +354,7 @@ class AI_(turtle.Turtle):
 
             prev_x = curr_x
             prev_y = curr_y
+        self._good_cycle(cycle, rec_positions)
 
 
 """
