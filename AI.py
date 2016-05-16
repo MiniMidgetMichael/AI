@@ -193,7 +193,6 @@ class AI_(turtle.Turtle):
         ##permutations(iterable[, r]) --> permutations object
         ##print (list(perm(total_values,2)))
         perms = perm(total_values,n_params-1)
-
         for p in perms:
             try:
                 fun(*p)
@@ -248,8 +247,8 @@ class AI_(turtle.Turtle):
             ##prefers that option
             return True
 
-    def _record_acts(self, acts):
-        pass
+    def _good_cycle(self, cycle):
+        assert (type(cycle) is dict),"cycle must be of <class 'dict'> with structure: {'func' : 'param'}, not %s" % type(cycle)
 
 
     def smart_act(self, t):
@@ -350,11 +349,15 @@ class AI_(turtle.Turtle):
 
 
 def cycle(acts, cycles):
-    print ("PREFS: ",AI.get_prefs())
-    AI.smart_act(acts)
-    AI.save_stats(f_params="params.txt", prefs="prefs.txt")
-    print ("PREFS: ",AI.get_prefs())
-    print ("REC_POSITIONS: ", AI.rec_positions)
+    c = 0
+    while (c != cycles):
+        print ("PREFS: ",AI.get_prefs())
+        AI.smart_act(acts)
+        AI.save_stats(f_params="params.txt", prefs="prefs.txt")
+        print ("PREFS: ",AI.get_prefs())
+        print ("REC_POSITIONS: ", AI.rec_positions)
+        c += 1
+        print ("END OF CYCLE #%s" % c)
 
 
 if __name__ == "__main__":
