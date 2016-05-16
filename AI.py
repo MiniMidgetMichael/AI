@@ -248,6 +248,8 @@ class AI_(turtle.Turtle):
             ##prefers that option
             return True
 
+    def _record_acts(self, acts):
+        pass
 
 
     def smart_act(self, t):
