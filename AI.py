@@ -254,6 +254,8 @@ class AI_(turtle.Turtle):
         goal_loc = goal.get_coor()
         print ("\n", "#CYCLE: ", cycle, "\n")
         print ("\n", "#POSITIONS: ", positions, "\n")
+        ##print ("\n", "#len(cycle)", len(cycle), "\n")
+        ##print ("\n", "#len(positions)", len(positions), "\n")
 
 
     def smart_act(self, t):
@@ -267,6 +269,7 @@ class AI_(turtle.Turtle):
         prev_y = self.Turtle.ycor()
         func_params = self.func_params
         chance = self.chance
+        pos_with_fun = []
         times = 0
         again = False
         cycle = []
@@ -305,6 +308,7 @@ class AI_(turtle.Turtle):
                                 if (curr_pos != [0, 0]):
                                     ##if self.Turtle hasn't been in current pos, record it
                                     rec_positions.append(curr_pos)
+                                    pos_with_fun.append([action, curr_pos])
                                     ##print ("#MOVED")
                                     print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
                                     prefs[action] += 1
@@ -338,6 +342,7 @@ class AI_(turtle.Turtle):
                     if not(curr_pos in rec_positions):
                         ##if self.Turtle hasn't been in current pos, record it
                         rec_positions.append(curr_pos)
+                        pos_with_fun.append([action, curr_pos])
                         ##print ("#MOVED")
                         print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
                         if not(action in prefs):
@@ -354,7 +359,7 @@ class AI_(turtle.Turtle):
 
             prev_x = curr_x
             prev_y = curr_y
-        self._good_cycle(cycle, rec_positions)
+        self._good_cycle(cycle, pos_with_fun)
 
 
 """
