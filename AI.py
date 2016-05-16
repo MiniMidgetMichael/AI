@@ -1,7 +1,8 @@
 #! C:/Users/MichaelLFarwell/AppData/Local/Programs/Python/Python35-32/python.exe
-import random, math, turtle, time, inspect, pickle, os
+import random, math, turtle, time, inspect, pickle, os, sys
 import AI_target as target
 from itertools import permutations as perm
+from modules import functions
 
 turtle_functions = turtle._tg_turtle_functions
 
@@ -20,6 +21,8 @@ class AI_(turtle.Turtle):
         self.prefs = prefs
         self.good_functions = good_functions
         self.func_params = func_params
+        rec_positions = []
+        self.rec_positions = rec_positions
 
     def _gen_values(self):
         actions = self.actions
@@ -95,7 +98,8 @@ class AI_(turtle.Turtle):
             pickle.dump(func_params, f)
 
     def _working_param(self, fun, params):
-        ##IF FUN HAS 2 PARAMS, IT GENERATES 2 PARAMS, THEN DOES FUN(PARAM_0), FUN(PARAM_1), PASSING ONLY 1 PARAM AT A TIME
+        ##  IF FUN HAS 2 PARAMS, IT GENERATES 2 PARAMS, THEN DOES FUN(PARAM_0), FUN(PARAM_1), PASSING ONLY 1 PARAM AT A TIME
+        ##  USE: '_new_working_param'
         func_params = self.func_params
         rnd_value = random.choice(range(100))
         types = ['str', 'int', 'bool']
@@ -217,6 +221,17 @@ class AI_(turtle.Turtle):
             print ("prefs.txt file is empty")
             return self.prefs
 
+    def get_params(self):
+        if not(self._file_empty("params.txt")):
+            with open("prefs.txt", "rb") as f:
+                params = pickle.load(f)
+                self.func_params.update(params)
+                return self.func_params
+        elif bool(self.func_params):
+            return self.func_params
+        else:
+            print ("Please run AI at least once to get function parameters")
+
     def save_stats(self, f_params=None, prefs=None):
         assert (not((f_params is None) and (prefs is None))),"Please specify object to save"
         with open(f_params, "wb") as f:
@@ -257,10 +272,15 @@ class AI_(turtle.Turtle):
                 f_prefs = pickle.load(f)
                 prefs.update(f_prefs)
 
+        rec_positions = self.rec_positions
+        prev_x = self.Turtle.xcor()
+        prev_y = self.Turtle.ycor()
         while (times < t):
+            curr_x = None
+            curr_y = None
             again = False
-            prev_x = self.Turtle.xcor()
-            prev_y = self.Turtle.ycor()
+
+
             for k,v in prefs.items():
                 if v >= 1:
                     if self._run_again(v) == True:
@@ -271,13 +291,16 @@ class AI_(turtle.Turtle):
                             fun = getattr(self.Turtle, action)
                             working_param = self._new_working_param(fun, needed_param)
                             print (action, working_param)
-                            if (((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y))):
-                                if (self.Turtle.xcor() != 0) and (self.Turtle.ycor() != 0):
-                                    ##print ("#MOVED")
-                                    print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
-                                    prefs[action] += 1
-                                elif (action in prefs) and prefs[action] > 1:
-                                    prefs[action] -= 1
+                            curr_x = self.Turtle.xcor()
+                            curr_y = self.Turtle.ycor()
+                            curr_pos = [curr_x, curr_y]
+                            if not(curr_pos in rec_positions):
+                                ##if self.Turtle hasn't been in current pos, record it
+                                rec_positions.append(curr_pos)
+                                ##print ("#MOVED")
+                                print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
+                                prefs[action] += 1
+
                         times += 1
                         again = True
             if again == True:
@@ -295,13 +318,18 @@ class AI_(turtle.Turtle):
                     fun = getattr(self.Turtle, action)
                     working_param = self._new_working_param(fun, needed_param)
                     print (action, working_param)
-                    if (((self.Turtle.xcor() != prev_x) or (self.Turtle.ycor() != prev_y))):
-                        if (self.Turtle.xcor() != 0) and (self.Turtle.ycor() != 0):
-                            ##print ("#MOVED")
-                            print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
+                    curr_x = self.Turtle.xcor()
+                    curr_y = self.Turtle.ycor()
+                    curr_pos = [curr_x, curr_y]
+                    if not(curr_pos in rec_positions):
+                        ##if self.Turtle hasn't been in current pos, record it
+                        rec_positions.append(curr_pos)
+                        ##print ("#MOVED")
+                        print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
+                        if not(action in prefs):
+                            prefs.setdefault(action, 0)
+                        else:
                             prefs[action] += 1
-                        elif (action in prefs) and prefs[action] > 0:
-                            prefs[action] -= 1
 
             func_params[action] = working_param
             if not(again):
@@ -310,12 +338,22 @@ class AI_(turtle.Turtle):
             else:
                 time.sleep(0.5)
 
+            prev_x = curr_x
+            prev_y = curr_y
+
+
+def cycle(acts, cycles):
+    print ("PREFS: ",AI.get_prefs())
+    AI.smart_act(acts)
+    AI.save_stats(f_params="params.txt", prefs="prefs.txt")
+    print ("PREFS: ",AI.get_prefs())
+    print ("REC_POSITIONS: ", AI.rec_positions)
+
 
 if __name__ == "__main__":
     screen = turtle.Screen()
     AI = AI_(10)
-    ##AI.act(10)
-    print ("PREFS: ",AI.get_prefs())
-    AI.smart_act(50)
-    AI.save_stats(f_params="params.txt", prefs="prefs.txt")
-    print ("PREFS: ",AI.get_prefs())
+    acts = int(functions.good_input("How many actions per cycle? [up to 50]:", values=[str(i) for i in range(1,51)]))
+    cycles = int(functions.good_input("How many cycles? [up to 10]:", values=[str(i) for i in range(1,11)]))
+    cycle(acts, cycles)
+
