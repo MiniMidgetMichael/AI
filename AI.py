@@ -357,13 +357,13 @@ class AI_(turtle.Turtle):
 def cycle(acts, cycles):
     c = 0
     while (c != cycles):
-        print ("PREFS: ",AI.get_prefs())
+        print ("\n", "PREFS: ",AI.get_prefs(), "\n")
         AI.smart_act(acts)
         AI.save_stats(f_params="params.txt", prefs="prefs.txt")
-        print ("PREFS: ",AI.get_prefs())
-        print ("REC_POSITIONS: ", AI.rec_positions)
+        print ("\n", "PREFS: ",AI.get_prefs(), "\n")
+        print ("\n", "REC_POSITIONS: ", AI.rec_positions, "\n")
         c += 1
-        print ("END OF CYCLE #%s" % c)
+        print ("\n", "END OF CYCLE #%s" % c, "\n")
 
 
 if __name__ == "__main__":
