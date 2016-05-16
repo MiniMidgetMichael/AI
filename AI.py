@@ -193,7 +193,7 @@ class AI_(turtle.Turtle):
         ##permutations(iterable[, r]) --> permutations object
         ##print (list(perm(total_values,2)))
         perms = perm(total_values,n_params-1)
-        print ("#permutations: ",[p for p in perms])
+        ##DON'T PRINT PERMUTATIONS!!!!
         for p in perms:
             try:
                 fun(*p)
