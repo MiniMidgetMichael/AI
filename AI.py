@@ -297,11 +297,12 @@ class AI_(turtle.Turtle):
                             curr_y = self.Turtle.ycor()
                             curr_pos = [curr_x, curr_y]
                             if not(curr_pos in rec_positions):
-                                ##if self.Turtle hasn't been in current pos, record it
-                                rec_positions.append(curr_pos)
-                                ##print ("#MOVED")
-                                print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
-                                prefs[action] += 1
+                                if (curr_pos != [0, 0]):
+                                    ##if self.Turtle hasn't been in current pos, record it
+                                    rec_positions.append(curr_pos)
+                                    ##print ("#MOVED")
+                                    print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
+                                    prefs[action] += 1
 
                         times += 1
                         again = True
