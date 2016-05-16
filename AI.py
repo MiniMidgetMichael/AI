@@ -98,7 +98,8 @@ class AI_(turtle.Turtle):
             pickle.dump(func_params, f)
 
     def _working_param(self, fun, params):
-        ##IF FUN HAS 2 PARAMS, IT GENERATES 2 PARAMS, THEN DOES FUN(PARAM_0), FUN(PARAM_1), PASSING ONLY 1 PARAM AT A TIME
+        ##  IF FUN HAS 2 PARAMS, IT GENERATES 2 PARAMS, THEN DOES FUN(PARAM_0), FUN(PARAM_1), PASSING ONLY 1 PARAM AT A TIME
+        ##  USE: '_new_working_param'
         func_params = self.func_params
         rnd_value = random.choice(range(100))
         types = ['str', 'int', 'bool']
