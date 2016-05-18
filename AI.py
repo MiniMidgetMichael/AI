@@ -233,12 +233,14 @@ class AI_(turtle.Turtle):
         else:
             print ("Please run AI at least once to get function parameters")
 
-    def save_stats(self, f_params=None, prefs=None):
-        assert (not((f_params is None) and (prefs is None))),"Please specify object to save"
+    def save_stats(self, f_params=None, prefs=None, cycles=None):
+        assert (not((f_params is None) and (prefs is None) and (cycles is None))),"Please specify object to save"
         with open(f_params, "wb") as f:
             pickle.dump(self.func_params, f)
         with open(prefs, "wb") as p:
             pickle.dump(self.prefs, p)
+        with open(cycles, "wb") as p:
+            pickle.dump(self.cycles, p)
 
     def _run_again(self, act):
         chance = self.chance
@@ -263,6 +265,7 @@ class AI_(turtle.Turtle):
             """
             CREATES:    {'func': [x_cor, y_cor], 'func1': [x_cor1, y_cor1]}
             """
+        
 
         print ("\n", "#LOC_DICT: ", loc_dict, "\n")
         ##print ("\n", "#len(cycle)", len(cycle), "\n")
@@ -273,6 +276,7 @@ class AI_(turtle.Turtle):
     def smart_act(self, t):
         working_param = None
         prefs = self.prefs
+        cyles = self.cycles
         self._smart_gen_values()
         actions = self.actions # {fun_int: 'func_name'}
         action_keys = actions.keys() # [fun_int]
@@ -293,6 +297,10 @@ class AI_(turtle.Turtle):
             with open("prefs.txt", "rb") as f:
                 f_prefs = pickle.load(f)
                 prefs.update(f_prefs)
+        if not(self._file_empty("cycles.txt")):
+            with open("cycles.txt", "rb") as f:
+                f_cycles = pickle.load(f)
+                cycles.update(f_cycles)
 
         rec_positions = self.rec_positions
         prev_x = self.Turtle.xcor()
