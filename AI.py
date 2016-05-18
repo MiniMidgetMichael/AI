@@ -23,6 +23,7 @@ class AI_(turtle.Turtle):
         self.func_params = func_params
         rec_positions = []
         self.rec_positions = rec_positions
+        self.cycles = {}
 
     def _gen_values(self):
         actions = self.actions
@@ -255,6 +256,7 @@ class AI_(turtle.Turtle):
         print ("\n", "#CYCLE: ", cycle, "\n")
         print ("\n", "#POSITIONS: ", positions, "\n")
         loc_dict = {}
+        cycles = self.cycles
         for index, i in enumerate(positions):
             if not(i[1] == [0.0, 0.0] or i[1] == [0, 0]):
                 loc_dict[i[0]] = i[1]
