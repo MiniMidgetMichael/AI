@@ -254,6 +254,15 @@ class AI_(turtle.Turtle):
         goal_loc = goal.get_coor()
         print ("\n", "#CYCLE: ", cycle, "\n")
         print ("\n", "#POSITIONS: ", positions, "\n")
+        loc_dict = {}
+        for index, i in enumerate(positions):
+            if not(i[1] == [0.0, 0.0] or i[1] == [0, 0]):
+                loc_dict[i[0]] = i[1]
+            """
+            CREATES:    {'func': [x_cor, y_cor], 'func1': [x_cor1, y_cor1]}
+            """
+
+        print ("\n", "#LOC_DICT: ", loc_dict, "\n")
         ##print ("\n", "#len(cycle)", len(cycle), "\n")
         ##print ("\n", "#len(positions)", len(positions), "\n")
         
