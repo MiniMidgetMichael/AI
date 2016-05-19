@@ -401,7 +401,8 @@ class AI_(turtle.Turtle):
 """
 
 
-def cycle(acts, cycles):
+def cycle(cycles):
+    acts = 30
     c = 0
     while (c != cycles):
         print ("\n", "PREFS: ",AI.get_prefs(), "\n")
@@ -416,7 +417,7 @@ def cycle(acts, cycles):
 if __name__ == "__main__":
     screen = turtle.Screen()
     AI = AI_(10)
-    acts = int(functions.good_input("How many actions per cycle? [up to 50]:", values=[str(i) for i in range(1,51)]))
+    ##acts = int(functions.good_input("How many actions per cycle? [up to 50]:", values=[str(i) for i in range(1,51)]))
     cycles = int(functions.good_input("How many cycles? [up to 10]:", values=[str(i) for i in range(1,11)]))
     cycle(acts, cycles)
 
