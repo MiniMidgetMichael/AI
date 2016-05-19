@@ -1,6 +1,6 @@
 #! C:/Users/MichaelLFarwell/AppData/Local/Programs/Python/Python35-32/python.exe
 import random, math, turtle, time, inspect, pickle, os, sys
-import AI_target as target
+from AI_target import *
 from itertools import permutations as perm
 from modules import functions
 
@@ -23,6 +23,7 @@ class AI_(turtle.Turtle):
         self.func_params = func_params
         rec_positions = []
         self.rec_positions = rec_positions
+        self.cycles = {}
 
     def _gen_values(self):
         actions = self.actions
@@ -193,7 +194,7 @@ class AI_(turtle.Turtle):
         ##permutations(iterable[, r]) --> permutations object
         ##print (list(perm(total_values,2)))
         perms = perm(total_values,n_params-1)
-
+        ##DON'T PRINT PERMUTATIONS!!!!
         for p in perms:
             try:
                 fun(*p)
@@ -232,12 +233,17 @@ class AI_(turtle.Turtle):
         else:
             print ("Please run AI at least once to get function parameters")
 
-    def save_stats(self, f_params=None, prefs=None):
-        assert (not((f_params is None) and (prefs is None))),"Please specify object to save"
-        with open(f_params, "wb") as f:
-            pickle.dump(self.func_params, f)
-        with open(prefs, "wb") as p:
-            pickle.dump(self.prefs, p)
+    def save_stats(self, f_params=None, prefs=None, cycles=None):
+        assert (not((f_params is None) and (prefs is None) and (cycles is None))),"Please specify object to save"
+        if not(f_params is None):
+            with open(f_params, "wb") as f:
+                pickle.dump(self.func_params, f)
+        if not(prefs is None):
+            with open(prefs, "wb") as p:
+                pickle.dump(self.prefs, p)
+        if not(cycles is None):
+            with open(cycles, "wb") as p:
+                pickle.dump(self.cycles, p)
 
     def _run_again(self, act):
         chance = self.chance
@@ -248,11 +254,34 @@ class AI_(turtle.Turtle):
             ##prefers that option
             return True
 
+    def _good_cycle(self, cycle, positions):
+        assert (type(cycle) is list),"cycle must be of <class 'list'> with structure: [['func', 'param'], ['func1', 'param1']], not %s" % type(cycle)
+        assert (type(positions) is list),"positions must be of <class 'list'> with structure: [['func', [x_cor, y_cor]]], not %s" % type(positions)
+        goal_loc = goal.get_coor()
+        print ("\n", "#CYCLE: ", cycle, "\n")
+        print ("\n", "#POSITIONS: ", positions, "\n")
+        loc_dict = {}
+        cycles = self.cycles
+        num_pos = 0
+        for index, i in enumerate(positions):
+            if not(i[1] == [0.0, 0.0] or i[1] == [0, 0]):
+                loc_dict[num_pos] = [i[0], i[1]]
+                num_pos += 1
+            """
+            CREATES:    {0: [x_cor, y_cor], 1: [x_cor1, y_cor1] ... }
+            """
+        
+
+        print ("\n", "#LOC_DICT: ", loc_dict, "\n")
+        ##print ("\n", "#len(cycle)", len(cycle), "\n")
+        ##print ("\n", "#len(positions)", len(positions), "\n")
+        
 
 
     def smart_act(self, t):
         working_param = None
         prefs = self.prefs
+        cyles = self.cycles
         self._smart_gen_values()
         actions = self.actions # {fun_int: 'func_name'}
         action_keys = actions.keys() # [fun_int]
@@ -261,8 +290,10 @@ class AI_(turtle.Turtle):
         prev_y = self.Turtle.ycor()
         func_params = self.func_params
         chance = self.chance
+        pos_with_fun = []
         times = 0
         again = False
+        cycle = list()
         if not(self._file_empty("params.txt")):
             with open("params.txt", "rb") as f:
                 f_func_params = pickle.load(f)
@@ -271,17 +302,23 @@ class AI_(turtle.Turtle):
             with open("prefs.txt", "rb") as f:
                 f_prefs = pickle.load(f)
                 prefs.update(f_prefs)
+        if not(self._file_empty("cycles.txt")):
+            with open("cycles.txt", "rb") as f:
+                f_cycles = pickle.load(f)
+                cycles.update(f_cycles)
 
         rec_positions = self.rec_positions
         prev_x = self.Turtle.xcor()
         prev_y = self.Turtle.ycor()
         while (times < t):
+            working_param = None
             curr_x = None
             curr_y = None
             again = False
 
 
             for k,v in prefs.items():
+                
                 if v >= 1:
                     if self._run_again(v) == True:
                         print ("#DO AGAIN: ")
@@ -295,16 +332,21 @@ class AI_(turtle.Turtle):
                             curr_y = self.Turtle.ycor()
                             curr_pos = [curr_x, curr_y]
                             if not(curr_pos in rec_positions):
-                                ##if self.Turtle hasn't been in current pos, record it
-                                rec_positions.append(curr_pos)
-                                ##print ("#MOVED")
-                                print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
-                                prefs[action] += 1
+                                if (curr_pos != [0, 0]):
+                                    ##if self.Turtle hasn't been in current pos, record it
+                                    rec_positions.append(curr_pos)
+                                    pos_with_fun.append([action, curr_pos])
+                                    ##print ("#MOVED")
+                                    print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
+                                    prefs[action] += 1
 
                         times += 1
                         again = True
             if again == True:
-                func_params[action] = working_param
+                cycle.append([action, working_param])
+                ##print ("#CYCLE IN 'smart_act': ", cycle)
+                if not(working_param is None):
+                    func_params[action] = working_param
                 continue
                         
             
@@ -313,6 +355,11 @@ class AI_(turtle.Turtle):
             if (action in action_keys):
                 action_val = action
                 action = actions[action]
+                ##cycle.append([action, working_param])
+                if ((action == 'hideturtle') or (action == 'ht')):
+                    print ("\n", "#PREVENTING AI FROM HIDING", "\n")
+                    times -= 1
+                    continue
                 if not(self._param_needed(getattr(self.Turtle, action)) is False):
                     needed_param = self._param_needed(getattr(self.Turtle, action))
                     fun = getattr(self.Turtle, action)
@@ -324,12 +371,18 @@ class AI_(turtle.Turtle):
                     if not(curr_pos in rec_positions):
                         ##if self.Turtle hasn't been in current pos, record it
                         rec_positions.append(curr_pos)
+                        pos_with_fun.append([action, curr_pos])
                         ##print ("#MOVED")
                         print ("COORDINATES: ",self.Turtle.xcor(), self.Turtle.ycor())
                         if not(action in prefs):
                             prefs.setdefault(action, 0)
                         else:
                             prefs[action] += 1
+                    if not(action in cycle):
+                        cycle.append([action, working_param])
+                    ##print ("#CYCLE IN 'smart_act': ", cycle)
+                    if not(working_param is None):
+                        func_params[action] = working_param
 
             func_params[action] = working_param
             if not(again):
@@ -340,20 +393,31 @@ class AI_(turtle.Turtle):
 
             prev_x = curr_x
             prev_y = curr_y
+        self._good_cycle(cycle, pos_with_fun)
 
 
-def cycle(acts, cycles):
-    print ("PREFS: ",AI.get_prefs())
-    AI.smart_act(acts)
-    AI.save_stats(f_params="params.txt", prefs="prefs.txt")
-    print ("PREFS: ",AI.get_prefs())
-    print ("REC_POSITIONS: ", AI.rec_positions)
+"""
+    END OF CLASS
+"""
+
+
+def cycle(cycles):
+    acts = 30
+    c = 0
+    while (c != cycles):
+        print ("\n", "PREFS: ",AI.get_prefs(), "\n")
+        AI.smart_act(acts)
+        AI.save_stats(f_params="params.txt", prefs="prefs.txt")
+        print ("\n", "PREFS: ",AI.get_prefs(), "\n")
+        print ("\n", "REC_POSITIONS: ", AI.rec_positions, "\n")
+        c += 1
+        print ("\n", "END OF CYCLE #%s" % c, "\n")
 
 
 if __name__ == "__main__":
     screen = turtle.Screen()
     AI = AI_(10)
-    acts = int(functions.good_input("How many actions per cycle? [up to 50]:", values=[str(i) for i in range(1,51)]))
+    ##acts = int(functions.good_input("How many actions per cycle? [up to 50]:", values=[str(i) for i in range(1,51)]))
     cycles = int(functions.good_input("How many cycles? [up to 10]:", values=[str(i) for i in range(1,11)]))
-    cycle(acts, cycles)
+    cycle(cycles)
 

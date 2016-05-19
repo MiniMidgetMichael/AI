@@ -13,8 +13,6 @@ The 'AI' then generates random numbers, if the number matches any of the functio
     At first static, then after getting that to work, making it move
 
 <b>TO-DO</b>
-<li>divide act() into 3 methods
 <li>add end goal for AI
 <li>find a way to properly generate string parameters
-<li>fix 'parameter-finder' method
 <li>fix 'parameter-finder' method [done(?)]
