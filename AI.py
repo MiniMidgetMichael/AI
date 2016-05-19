@@ -260,6 +260,13 @@ class AI_(turtle.Turtle):
         goal_loc = goal.get_coor()
         print ("\n", "#CYCLE: ", cycle, "\n")
         print ("\n", "#POSITIONS: ", positions, "\n")
+        """
+        ERROR:
+        
+            cycle  ==  [['func', None, ['func1', 'param_for_prev_func'], ['func2', 'param_for_prev_func']]
+
+        
+        """
         loc_dict = {}
         cycles = self.cycles
         num_pos = 0
@@ -268,7 +275,7 @@ class AI_(turtle.Turtle):
                 loc_dict[num_pos] = [i[0], i[1]]
                 num_pos += 1
             """
-            CREATES:    {'func': [x_cor, y_cor], 'func1': [x_cor1, y_cor1]}
+            CREATES:    {0: [x_cor, y_cor], 1: [x_cor1, y_cor1] ... }
             """
         
 
