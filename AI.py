@@ -235,12 +235,15 @@ class AI_(turtle.Turtle):
 
     def save_stats(self, f_params=None, prefs=None, cycles=None):
         assert (not((f_params is None) and (prefs is None) and (cycles is None))),"Please specify object to save"
-        with open(f_params, "wb") as f:
-            pickle.dump(self.func_params, f)
-        with open(prefs, "wb") as p:
-            pickle.dump(self.prefs, p)
-        with open(cycles, "wb") as p:
-            pickle.dump(self.cycles, p)
+        if not(f_params is None):
+            with open(f_params, "wb") as f:
+                pickle.dump(self.func_params, f)
+        if not(prefs is None):
+            with open(prefs, "wb") as p:
+                pickle.dump(self.prefs, p)
+        if not(cycles is None):
+            with open(cycles, "wb") as p:
+                pickle.dump(self.cycles, p)
 
     def _run_again(self, act):
         chance = self.chance
@@ -259,9 +262,11 @@ class AI_(turtle.Turtle):
         print ("\n", "#POSITIONS: ", positions, "\n")
         loc_dict = {}
         cycles = self.cycles
+        num_pos = 0
         for index, i in enumerate(positions):
             if not(i[1] == [0.0, 0.0] or i[1] == [0, 0]):
-                loc_dict[i[0]] = i[1]
+                loc_dict[num_pos] = [i[0], i[1]]
+                num_pos += 1
             """
             CREATES:    {'func': [x_cor, y_cor], 'func1': [x_cor1, y_cor1]}
             """
