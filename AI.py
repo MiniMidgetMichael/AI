@@ -246,9 +246,10 @@ class AI_(turtle.Turtle):
                 pickle.dump(self.cycles, p)
 
     def _run_again(self, act):
+        ##print ("\n", "#ACT: ", act, "\n")
         chance = self.chance
-        prefs = self.prefs
         ## >>> [1, 0, 0, 1, etc.]
+        ##print ("\n", "RANGE(ACT, (100-CHANCE)): ", range(act, (100-chance)), "\n")
         again = random.choice(range(act, (100-chance)))
         if again == act:
             ##prefers that option
@@ -269,7 +270,7 @@ class AI_(turtle.Turtle):
         for index, i in enumerate(positions):
             if not(i[1] == [0.0, 0.0] or i[1] == [0, 0]):
                 loc_dict[num_pos] = [i[0], i[1]]
-                loc_prefs[i[1][0]] = 0
+                loc_prefs[i[0]] = 0
                 num_pos += 1
             """
             CREATES:    {0: ['func', [x_cor, y_cor]], 1: ['func1', [x_cor1, y_cor1]] ... }
@@ -296,8 +297,14 @@ class AI_(turtle.Turtle):
         goal_loc = goal.get_coor()
         goal_x = goal_loc[0]
         goal_y = goal_loc[1]
-        ai_x = pos[0]
-        ai_y = pos[1]
+        if type(pos[0]) == str:
+            ai_x = int(ord(pos[0]))
+        else:
+            ai_x = int(pos[0])
+        if type(pos[1]) == str:
+            ai_y = int(ord(pos[1]))
+        else:
+            ai_y = int(pos[1])
         prev_x = prev_pos[0]
         prev_y = prev_pos[1]
         x_closer = False
@@ -308,7 +315,7 @@ class AI_(turtle.Turtle):
         y_dist = abs(ai_y - goal_y)
         prev_x_dist = abs(prev_x - goal_x)
         prev_y_dist = abs(prev_y - goal_y)
-
+        
         if x_dist < prev_x_dist:
             x_closer = True
             ##good
@@ -321,7 +328,7 @@ class AI_(turtle.Turtle):
         elif y_dist > prev_y_dist:
             y_farther = True
             ##last y_distance < current
-
+        
         return x_closer, y_closer
 
     def smart_act(self, t):
