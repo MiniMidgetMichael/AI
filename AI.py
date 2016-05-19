@@ -260,13 +260,6 @@ class AI_(turtle.Turtle):
         goal_loc = goal.get_coor()
         print ("\n", "#CYCLE: ", cycle, "\n")
         print ("\n", "#POSITIONS: ", positions, "\n")
-        """
-        ERROR:
-        
-            cycle  ==  [['func', None, ['func1', 'param_for_prev_func'], ['func2', 'param_for_prev_func']]
-
-        
-        """
         loc_dict = {}
         cycles = self.cycles
         num_pos = 0
@@ -300,7 +293,7 @@ class AI_(turtle.Turtle):
         pos_with_fun = []
         times = 0
         again = False
-        cycle = []
+        cycle = list()
         if not(self._file_empty("params.txt")):
             with open("params.txt", "rb") as f:
                 f_func_params = pickle.load(f)
@@ -318,12 +311,14 @@ class AI_(turtle.Turtle):
         prev_x = self.Turtle.xcor()
         prev_y = self.Turtle.ycor()
         while (times < t):
+            working_param = None
             curr_x = None
             curr_y = None
             again = False
 
 
             for k,v in prefs.items():
+                
                 if v >= 1:
                     if self._run_again(v) == True:
                         print ("#DO AGAIN: ")
@@ -349,7 +344,9 @@ class AI_(turtle.Turtle):
                         again = True
             if again == True:
                 cycle.append([action, working_param])
-                func_params[action] = working_param
+                ##print ("#CYCLE IN 'smart_act': ", cycle)
+                if not(working_param is None):
+                    func_params[action] = working_param
                 continue
                         
             
@@ -358,7 +355,7 @@ class AI_(turtle.Turtle):
             if (action in action_keys):
                 action_val = action
                 action = actions[action]
-                cycle.append([action, working_param])
+                ##cycle.append([action, working_param])
                 if ((action == 'hideturtle') or (action == 'ht')):
                     print ("\n", "#PREVENTING AI FROM HIDING", "\n")
                     times -= 1
@@ -381,6 +378,11 @@ class AI_(turtle.Turtle):
                             prefs.setdefault(action, 0)
                         else:
                             prefs[action] += 1
+                    if not(action in cycle):
+                        cycle.append([action, working_param])
+                    ##print ("#CYCLE IN 'smart_act': ", cycle)
+                    if not(working_param is None):
+                        func_params[action] = working_param
 
             func_params[action] = working_param
             if not(again):
