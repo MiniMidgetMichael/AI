@@ -419,5 +419,5 @@ if __name__ == "__main__":
     AI = AI_(10)
     ##acts = int(functions.good_input("How many actions per cycle? [up to 50]:", values=[str(i) for i in range(1,51)]))
     cycles = int(functions.good_input("How many cycles? [up to 10]:", values=[str(i) for i in range(1,11)]))
-    cycle(acts, cycles)
+    cycle(cycles)
 
