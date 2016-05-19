@@ -261,22 +261,68 @@ class AI_(turtle.Turtle):
         print ("\n", "#CYCLE: ", cycle, "\n")
         print ("\n", "#POSITIONS: ", positions, "\n")
         loc_dict = {}
+        loc_prefs = {}
         cycles = self.cycles
         num_pos = 0
+        x_closer = False
+        y_closer = False
         for index, i in enumerate(positions):
             if not(i[1] == [0.0, 0.0] or i[1] == [0, 0]):
                 loc_dict[num_pos] = [i[0], i[1]]
+                loc_prefs[i[1][0]] = 0
                 num_pos += 1
             """
-            CREATES:    {0: [x_cor, y_cor], 1: [x_cor1, y_cor1] ... }
+            CREATES:    {0: ['func', [x_cor, y_cor]], 1: ['func1', [x_cor1, y_cor1]] ... }
             """
         
 
         print ("\n", "#LOC_DICT: ", loc_dict, "\n")
-        ##print ("\n", "#len(cycle)", len(cycle), "\n")
-        ##print ("\n", "#len(positions)", len(positions), "\n")
-        
+        for k,v in loc_dict.items():
+            if k == 0:
+                prev_pos = v[1]
+            pos = v[1]
+            ##if closer to goal_loc, loc_prefs[v[0]] ('func') += 1
+            x_closer, y_closer = self._dif_to_goal(pos, prev_pos)
+            if (x_closer or y_closer):
+               loc_prefs[v[0]] += 1
+            
+            prev_pos = pos
+        print ("\n", "#LOC_PREFS: ", loc_prefs, "\n")
 
+        
+    def _dif_to_goal(self, pos, prev_pos):
+        assert (type(pos) is list and len(pos) == 2),"pos must be list with structure: [x_cor(int), y_cor(int)]"
+        assert (type(prev_pos) is list and len(prev_pos) == 2),"prev_pos must be list with structure: [x_cor(int), y_cor(int)]"
+        goal_loc = goal.get_coor()
+        goal_x = goal_loc[0]
+        goal_y = goal_loc[1]
+        ai_x = pos[0]
+        ai_y = pos[1]
+        prev_x = prev_pos[0]
+        prev_y = prev_pos[1]
+        x_closer = False
+        y_closer = False
+        x_farther = False
+        y_farther = False
+        x_dist = abs(ai_x - goal_x)
+        y_dist = abs(ai_y - goal_y)
+        prev_x_dist = abs(prev_x - goal_x)
+        prev_y_dist = abs(prev_y - goal_y)
+
+        if x_dist < prev_x_dist:
+            x_closer = True
+            ##good
+        elif x_dist > prev_x_dist:
+            x_farther = True
+            ##last x_distance < current
+        if y_dist < prev_x_dist:
+            y_closer = False
+            ##good
+        elif y_dist > prev_y_dist:
+            y_farther = True
+            ##last y_distance < current
+
+        return x_closer, y_closer
 
     def smart_act(self, t):
         working_param = None
