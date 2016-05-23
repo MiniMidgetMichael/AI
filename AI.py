@@ -283,7 +283,7 @@ class AI_(turtle.Turtle):
                 prev_pos = v[1]
             pos = v[1]
             ##if closer to goal_loc, loc_prefs[v[0]] ('func') += 1
-            x_closer, y_closer = self._dif_to_goal(pos, prev_pos)
+            x_closer, y_closer = self._dist_to_goal(pos, prev_pos)
             if (x_closer or y_closer):
                loc_prefs[v[0]] += 1
             
@@ -291,7 +291,7 @@ class AI_(turtle.Turtle):
         print ("\n", "#LOC_PREFS: ", loc_prefs, "\n")
 
         
-    def _dif_to_goal(self, pos, prev_pos):
+    def _dist_to_goal(self, pos, prev_pos):
         assert (type(pos) is list and len(pos) == 2),"pos must be list with structure: [x_cor(int), y_cor(int)]"
         assert (type(prev_pos) is list and len(prev_pos) == 2),"prev_pos must be list with structure: [x_cor(int), y_cor(int)]"
         goal_loc = goal.get_coor()
