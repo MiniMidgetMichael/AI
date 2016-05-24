@@ -167,7 +167,7 @@ class AI_(turtle.Turtle):
                     for s in range(len_):
                         str_value += chr(random.choice(strings))
                     values[i][0] = str_value
-                if typ == 1:
+                elif typ == 1:
                     ## int
                     int_value = random.choice(range(1,50))
                     values[i][1] = int_value
