@@ -16,3 +16,6 @@ The 'AI' then generates random numbers, if the number matches any of the functio
 <li>add end goal for AI
 <li>find a way to properly generate string parameters
 <li>fix 'parameter-finder' method [done(?)]
+
+<b>ERRORS:</b>
+<li>after passing 'None' to circle, every function is passed 'None'
