@@ -155,7 +155,7 @@ class AI_(turtle.Turtle):
         params = param_dict
         
         for i in params:
-            values.setdefault(i, [None, None, None])
+            values.setdefault(i, [0, 0, 0])
             for typ in range(3):
                 ## 0 >>> str
                 ## 1 >>> int
