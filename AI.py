@@ -173,7 +173,8 @@ class AI_(turtle.Turtle):
                     values[i][1] = int_value
                 elif typ == 2:
                     ## bool
-                    bool_value = bool(random.choice(range(2)))
+                    bools = [True, False]
+                    bool_value = random.choice(bools)
                     values[i][2] = bool_value
         
         """print (values) >>> {
