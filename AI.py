@@ -153,7 +153,11 @@ class AI_(turtle.Turtle):
             if (p != 'self') and (p != None):
                 param_dict.setdefault(p)
         params = param_dict
+
+        working_perms = False
+        none_run = 0
         
+
         for i in params:
             values.setdefault(i, [0, 0, 0])
             for typ in range(3):
@@ -201,12 +205,17 @@ class AI_(turtle.Turtle):
         for p in perms:
             try:
                 fun(*p)
-                print ("Working perm: ",*p)
+                ##print ("Working perm: ",*p)
+                working_perms = True
                 return [*p]
             except:
                 pass
-        
-        
+        print ("Turtle is in 'None-run', trying: self.Turtle.fd(10)")
+        self.Turtle.fd(10)
+##        if not(working_perms):
+##            print ("TURTLE IS IN 'None-run', RESETTING!!")
+##            self.Turtle.reset()
+
 
 
 
