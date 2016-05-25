@@ -161,20 +161,20 @@ class AI_(turtle.Turtle):
         for i in params:
             values.setdefault(i, [0, 0, 0])
             for typ in range(3):
-                ## 0 >>> str
-                ## 1 >>> int
+                ## 0 >>> int
+                ## 1 >>> str
                 ## 2 >>> bool
                 if typ == 0:
+                    ## int
+                    int_value = random.choice(range(1,50))
+                    values[i][1] = int_value
+                elif typ == 1:
                     ## str
                     len_ = random.choice(range(3,10))
                     str_value = ""
                     for s in range(len_):
                         str_value += chr(random.choice(strings))
                     values[i][0] = str_value
-                elif typ == 1:
-                    ## int
-                    int_value = random.choice(range(1,50))
-                    values[i][1] = int_value
                 elif typ == 2:
                     ## bool
                     bools = [True, False]
@@ -184,8 +184,8 @@ class AI_(turtle.Turtle):
                     print ("#BREAK")
         
         """print (values) >>> {
-            'param_0' : ['abc', 012, True],
-            'param_1' : ['cde', 345, False]
+            'param_0' : [012, 'abc', True],
+            'param_1' : [345, 'def', False]
             }
         """
         """print (params) >>> {
@@ -197,21 +197,37 @@ class AI_(turtle.Turtle):
             for i in v:
                 total_values.append(i)
 
-        """print (total_values) >>> ['abc',012,True,'cde',345,False]"""
+        """print (total_values) >>> [012, 'abc', True, 345, 'def', False]"""
         ##permutations(iterable[, r]) --> permutations object
         ##print (list(perm(total_values,2)))
         perms = perm(total_values,n_params-1)
         ##DON'T PRINT PERMUTATIONS!!!!
-        for p in perms:
+        perms = list(perms)
+        for p_index, p in enumerate(perms):
+            ##print ("p: ", p)
+            p = list(p)
+            s, i, b = None, None, None
+            for index, i in enumerate(p):
+                if (type(i) is str):
+                    s = i
+                    p.pop(index)
+                elif (type(i) is int):
+                    i = i
+                    p.pop(index)
+                elif (type(i) is bool):
+                    b = i
+                    p.pop(index)
+            p = (i, b, s,)
+            print ("p: ",p)
+            perms[p_index] = p
             try:
                 fun(*p)
                 ##print ("Working perm: ",*p)
-                working_perms = True
                 return [*p]
             except:
                 pass
-        print ("Turtle is in 'None-run', trying: self.Turtle.fd(10)")
-        self.Turtle.fd(10)
+##        print ("Turtle is in 'None-run', trying: self.Turtle.fd(10)")
+##        self.Turtle.fd(10)
 ##        if not(working_perms):
 ##            print ("TURTLE IS IN 'None-run', RESETTING!!")
 ##            self.Turtle.reset()
