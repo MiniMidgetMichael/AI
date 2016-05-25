@@ -142,7 +142,7 @@ class AI_(turtle.Turtle):
         strings = [i for i in range(0b01100001,0b01111010)]
         values = {} # for each param, gen: str, int, bool value
         total_values = []
-        ##print ("fun: ", fun, "# of params: ",n_params)
+        ##print ("fun: ", fun, "# of params: ",n_params, "params: ",params)
         """EX:
             fun = circle
             params = ['radius', 'degrees'] >>> [<class 'int'>, <class 'int'>]
@@ -176,6 +176,8 @@ class AI_(turtle.Turtle):
                     bools = [True, False]
                     bool_value = random.choice(bools)
                     values[i][2] = bool_value
+                else:
+                    print ("#BREAK")
         
         """print (values) >>> {
             'param_0' : ['abc', 012, True],
@@ -199,6 +201,7 @@ class AI_(turtle.Turtle):
         for p in perms:
             try:
                 fun(*p)
+                print ("Working perm: ",*p)
                 return [*p]
             except:
                 pass
