@@ -204,7 +204,7 @@ class AI_(turtle.Turtle):
         ##DON'T PRINT PERMUTATIONS!!!!
         perms = list(perms)
         for p_index, p in enumerate(perms):
-            print ("p before alter: ",p)
+            ##print ("p before alter: ",p)
             p = list(p)
             str_, int_, bool_ = None, None, None
             for index, i in enumerate(p):
@@ -226,7 +226,7 @@ class AI_(turtle.Turtle):
             if not(str_ is None):
                 p[p_loc] = str_
 
-            print ("p after alter: ",p)
+            ##print ("p after alter: ",p)
 
             try:
                 fun(*p)
@@ -286,8 +286,8 @@ class AI_(turtle.Turtle):
         ##print ("\n", "#ACT: ", act, "\n")
         chance = self.chance
         ## >>> [1, 0, 0, 1, etc.]
-        ##print ("\n", "RANGE(ACT, (100-CHANCE)): ", range(act, (100-chance)), "\n")
-        again = random.choice(range(act, (100-chance)))
+        ##print ("\n", "RANGE(ACT, (101-CHANCE)): ", range(act, (101-chance)), "\n")
+        again = random.choice(range(act, (101-chance)))
         if again == act:
             ##prefers that option
             return True
@@ -434,6 +434,8 @@ def cycle(cycles):
         print ("\n", "REC_POSITIONS: ", AI.rec_positions, "\n")
         c += 1
         print ("\n", "END OF CYCLE #%s" % c, "\n")
+        print ("\n", "RESETTING TURTLE", "\n")
+        AI.Turtle.reset()
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 #! C:/Users/MichaelLFarwell/AppData/Local/Programs/Python/Python35-32/python.exe
 from inspect import isclass
+import pickle, os
 
 
 
@@ -27,3 +28,17 @@ def good_input(prompt, typ=None, values=None):
                     return ans
                 else:
                     print ("Please only answer with one of %s, not %s" % (values, ans))
+
+def file_empty(file):
+        return False if os.path.isfile(file) and os.path.getsize(file) > 0 else True
+
+
+def erase_file(file):
+        assert (type(file) is str),"File must be name of file, (i.e. <class 'str'> not %s)" % type(file)
+        assert (file_empty(file) == False),"File is empty/non-existent"
+
+        open(file, 'wb').close()
+
+
+if __name__ == "__main__":
+        erase_file('a')
