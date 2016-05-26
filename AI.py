@@ -219,7 +219,7 @@ class AI_(turtle.Turtle):
                 if (type(i) is str):
                     perms.pop(p_index)
                     perms.append(p)
-                    print ("moving %s to end of perms because it has a string" % p)
+                    ##print ("moving %s to end of perms because it has a string" % p)
 
             p_loc = 0
             if not(int_ is None):

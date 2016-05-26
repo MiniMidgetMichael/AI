@@ -18,7 +18,7 @@ The 'AI' then generates random numbers, if the number matches any of the functio
 <li>fix 'parameter-finder' method [done(?)]
 
 <b>ERRORS:</b>
-<li>after passing 'None' to a function, every other function is passed 'None' (a 'None-run')
+<li>after passing 'None' to a function, every other function is passed 'None' (a 'None-run') {fixed?}
 
 ***when doing a 'None-run', trying to do any function w/parameter returns an error
    MOST LIKELY DUE TO PASSING STRING TO FUNCTION THAT REQUIRES INTEGER
