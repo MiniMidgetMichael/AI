@@ -210,15 +210,13 @@ class AI_(turtle.Turtle):
             for index, i in enumerate(p):
                 ##print ("i in p in perms: ", i)
                 if (type(i) is str):
-                    str_ = i
+                    perms.pop(p_index)
+                    perms.append(p)
                 elif (type(i) is int):
                     int_ = i
                 elif (type(i) is bool):
                     bool_ = i
 
-                if (type(i) is str):
-                    perms.pop(p_index)
-                    perms.append(p)
                     ##print ("moving %s to end of perms because it has a string" % p)
 
             p_loc = 0
