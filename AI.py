@@ -204,23 +204,30 @@ class AI_(turtle.Turtle):
         ##DON'T PRINT PERMUTATIONS!!!!
         perms = list(perms)
         for p_index, p in enumerate(perms):
-            ##print ("p: ", p)
+            print ("p before alter: ",p)
             p = list(p)
-            s, i, b = None, None, None
+            str_, int_, bool_ = None, None, None
             for index, i in enumerate(p):
-                print ("i in p: ", i)
+                ##print ("i in p in perms: ", i)
                 if (type(i) is str):
-                    s = i
-                    p.pop(index)
+                    str_ = i
                 elif (type(i) is int):
-                    i = i
-                    p.pop(index)
+                    int_ = i
                 elif (type(i) is bool):
-                    b = i
-                    p.pop(index)
-            p = (i, b, s,)
-            print ("p: ",p)
-            perms[p_index] = p
+                    bool_ = i
+
+            p_loc = 0
+            if not(int_ is None):
+                p[0] = int_
+                p_loc += 1
+            if not(bool_ is None):
+                p[p_loc] = bool_
+                p_loc += 1
+            if not(str_ is None):
+                p[p_loc] = str_
+
+            print ("p after alter: ",p)
+
             try:
                 fun(*p)
                 ##print ("Working perm: ",*p)
