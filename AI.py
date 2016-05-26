@@ -282,6 +282,21 @@ class AI_(turtle.Turtle):
             with open(cycles, "wb") as p:
                 pickle.dump(self.cycles, p)
 
+    def erase_stats(self, f_params=False, prefs=False, cycles=False, all_=False):
+        assert (not((f_params is False) and (prefs is False) and (cycles is False) and (all_ is False))),"Please specify object to erase"
+        if f_params:
+            open("params.txt", "wb").close()
+        if prefs:
+            open("prefs.txt", "wb").close()
+        if cycles:
+            open("cycles.txt", "wb").close()
+        if all_:
+            open("params.txt", "wb").close()
+            open("prefs.txt", "wb").close()
+            open("cycles.txt", "wb").close()
+            open("memory.txt", "wb").close()
+            open("last_acts.txt", "wb").close()
+
     def _run_again(self, act):
         ##print ("\n", "#ACT: ", act, "\n")
         chance = self.chance
