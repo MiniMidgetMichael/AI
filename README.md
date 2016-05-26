@@ -20,7 +20,8 @@ The 'AI' then generates random numbers, if the number matches any of the functio
 <b>ERRORS:</b>
 <li>after passing 'None' to a function, every other function is passed 'None' (a 'None-run')
 
-***when doing a 'None-run', trying to do any function w/parameter returns an error,
+***when doing a 'None-run', trying to do any function w/parameter returns an error
+   MOST LIKELY DUE TO PASSING STRING TO FUNCTION THAT REQUIRES INTEGER
 	Ex:
 	>>> AI.Turtle.fd(20)
 		Traceback (most recent call last):
