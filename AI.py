@@ -208,6 +208,7 @@ class AI_(turtle.Turtle):
             p = list(p)
             s, i, b = None, None, None
             for index, i in enumerate(p):
+                print ("i in p: ", i)
                 if (type(i) is str):
                     s = i
                     p.pop(index)
