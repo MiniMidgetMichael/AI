@@ -2,6 +2,7 @@
 import random, math, turtle, time, inspect, pickle, os, sys
 from AI_target import *
 from itertools import permutations as perm
+from itertools import combinations as comb
 from modules import functions
 
 turtle_functions = turtle._tg_turtle_functions
@@ -167,14 +168,14 @@ class AI_(turtle.Turtle):
                 if typ == 0:
                     ## int
                     int_value = random.choice(range(1,50))
-                    values[i][1] = int_value
+                    values[i][0] = int_value
                 elif typ == 1:
                     ## str
                     len_ = random.choice(range(3,10))
                     str_value = ""
                     for s in range(len_):
                         str_value += chr(random.choice(strings))
-                    values[i][0] = str_value
+                    values[i][1] = str_value
                 elif typ == 2:
                     ## bool
                     bools = [True, False]
@@ -199,49 +200,29 @@ class AI_(turtle.Turtle):
 
         """print (total_values) >>> [012, 'abc', True, 345, 'def', False]"""
         ##permutations(iterable[, r]) --> permutations object
-        ##print (list(perm(total_values,2)))
+        ##combinations(iterable[, r]) --> combinations object
         perms = perm(total_values,n_params-1)
         ##DON'T PRINT PERMUTATIONS!!!!
         perms = list(perms)
-        for p_index, p in enumerate(perms):
-            ##print ("p before alter: ",p)
+        n_perms = list()
+        has_str = False
+
+        for index, i in enumerate(perms):
+            for p_index, p in enumerate(i):
+                if (type(p) is str):
+                    has_str = True
+                    n_perms.append(i)
+                if (p_index == len(i) - 1) and not(has_str):
+                    n_perms.insert(0, i)
+
+        for p in n_perms:
             p = list(p)
-            str_, int_, bool_ = None, None, None
-            for index, i in enumerate(p):
-                ##print ("i in p in perms: ", i)
-                if (type(i) is str):
-                    perms.pop(p_index)
-                    perms.append(p)
-                elif (type(i) is int):
-                    int_ = i
-                elif (type(i) is bool):
-                    bool_ = i
-
-                    ##print ("moving %s to end of perms because it has a string" % p)
-
-            p_loc = 0
-            if not(int_ is None):
-                p[0] = int_
-                p_loc += 1
-            if not(bool_ is None):
-                p[p_loc] = bool_
-                p_loc += 1
-            if not(str_ is None):
-                p[p_loc] = str_
-
-            ##print ("p after alter: ",p)
-
             try:
                 fun(*p)
-                ##print ("Working perm: ",*p)
                 return [*p]
             except:
+                ##print ("%s did not work" % [*p])
                 pass
-##        print ("Turtle is in 'None-run', trying: self.Turtle.fd(10)")
-##        self.Turtle.fd(10)
-##        if not(working_perms):
-##            print ("TURTLE IS IN 'None-run', RESETTING!!")
-##            self.Turtle.reset()
 
 
 
