@@ -6,7 +6,9 @@ from itertools import combinations as comb
 from modules import functions
 
 turtle_functions = turtle._tg_turtle_functions
-
+bad_functions = ['undobufferentries', 'setundobuffer', 'getscreen']#, ...etc.
+for i in turtle_functions:
+    pass
 
 class AI_(turtle.Turtle):
     def __init__(self, chance):
