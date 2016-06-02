@@ -322,6 +322,7 @@ class AI_(turtle.Turtle):
         goal_x = goal_loc[0]
         goal_y = goal_loc[1]
         cycle_pref = {}
+        self.cycle_pref = cycle_pref
         for index, i in enumerate(cycle):
             cycle_pref[index] = [i, 0]
             ##print ("\n", "#cycle_pref :", cycle_pref, "\n")
@@ -341,8 +342,8 @@ class AI_(turtle.Turtle):
             y_cor = loc[1]
             prev_x = prev_loc[0]
             prev_y = prev_loc[1]
-            x_diff = abs(x_cor - goal_x)
-            y_diff = abs(y_cor - goal_y)
+            x_diff = abs(int(x_cor) - int(goal_x))
+            y_diff = abs(int(y_cor) - int(goal_y))
             if (x_diff < prev_x_diff) and (y_diff < prev_y_diff):
                 cycle_pref[index][1] += 1
                 good_cycle = True
@@ -358,8 +359,8 @@ class AI_(turtle.Turtle):
             prev_loc = loc
             prev_x_diff = x_diff
             prev_y_diff = y_diff
-            if good_cycle:
-                print ("\n", "#GOOD_CYCLE", "\n")
+        if good_cycle:
+            print ("\n", "#GOOD_CYCLE", "\n")
 
         print ("\n", "#CYCLE_PREF: ", cycle_pref, "\n")
             
