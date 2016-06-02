@@ -6,14 +6,17 @@ from itertools import combinations as comb
 from modules import functions
 
 turtle_functions = turtle._tg_turtle_functions
-bad_functions = ['undobufferentries', 'setundobuffer', 'getscreen', 'ht', 'onclick', 'onrelease', 'ondrag', 'clearstamp', 'clearstamps', 'radians', 'shapesize', 'shape', 'width', 'resizemode', 'shearfactor', 'shapetransform']#, ...etc.
+bad_functions = ['undobufferentries', 'setundobuffer', 'getscreen', 'ht', 'onclick', 'onrelease', 'ondrag', 'clearstamp', 'clearstamps', 'radians', 'shapesize', 'shape', 'width', 'resizemode', 'shearfactor', 'shapetransform', 'turtlesize']#, ...etc.
 for i in turtle_functions:
     if i in bad_functions:
         turtle_functions.remove(i)
+        ##print ("Removing %s from turtle_functions" % i)
 
 class AI_(turtle.Turtle):
-    def __init__(self, chance):
+    def __init__(self, chance, screen):
         assert ((type(chance) is int) and (chance > 0) and (chance < 100)), "chance must be int, and 0 < chance < 100"
+        assert (type(screen) is turtle._Screen),"screen must be <class 'turtle.Screen>, not %s" % type(screen)
+        self.screen = screen
         self.chance = chance
         __turtle_ = turtle.Turtle()
         self.Turtle = __turtle_
@@ -313,16 +316,61 @@ class AI_(turtle.Turtle):
             return True
 
     def _good_cycle(self, cycle, positions):
-        assert (type(cycle) is list),"cycle must be of <class 'list'> with structure: [['func', 'param'], ['func1', 'param1']], not %s" % type(cycle)
+        assert (type(cycle) is list),"cycle must be of <class 'list'> with structure: [['func', ['param']], ['func1', ['param1']]], not %s" % type(cycle)
         assert (type(positions) is list),"positions must be of <class 'list'> with structure: [['func', [x_cor, y_cor]]], not %s" % type(positions)
         goal_loc = goal.get_coor()
+        goal_x = goal_loc[0]
+        goal_y = goal_loc[1]
+        cycle_pref = {}
+        for index, i in enumerate(cycle):
+            cycle_pref[index] = [i, 0]
+            ##print ("\n", "#cycle_pref :", cycle_pref, "\n")
+            """ {0 : ['func', ['param']],
+                 1 : ['func_1', ['param_1']]
+                } """
         print ("\n", "#CYCLE: ", cycle, "\n")
         print ("\n", "#POSITIONS: ", positions, "\n")
+        prev_loc = [0, 0]
+        prev_x_diff = abs(positions[0][1][0] - goal_x)
+        prev_y_diff = abs(positions[0][1][1] - goal_y)
+        good_cycle = False
+        for index, i in enumerate(positions):
+            fun = i[0]
+            loc = i[1]
+            x_cor = loc[0]
+            y_cor = loc[1]
+            prev_x = prev_loc[0]
+            prev_y = prev_loc[1]
+            x_diff = abs(x_cor - goal_x)
+            y_diff = abs(y_cor - goal_y)
+            if (x_diff < prev_x_diff) and (y_diff < prev_y_diff):
+                cycle_pref[index][1] += 1
+                good_cycle = True
+                #print ("#x < prev_x; y < prev_y")
+            elif (x_diff < prev_x_diff) and (y_diff == prev_y_diff):
+                cycle_pref[index][1] += 1
+                good_cycle = True
+                #print ("#x < prev_x; y == prev_y")
+            elif (y_diff < prev_y_diff) and (x_diff == prev_x_diff):
+                cycle_pref[index][1] += 1
+                good_cycle = True
+                #print ("#x == prev_x; y < prev_y")
+            prev_loc = loc
+            prev_x_diff = x_diff
+            prev_y_diff = y_diff
+            if good_cycle:
+                print ("\n", "#GOOD_CYCLE", "\n")
+
+        print ("\n", "#CYCLE_PREF: ", cycle_pref, "\n")
+            
+            
+            
         
 
     def smart_act(self, t):
         working_param = None
         prefs = self.prefs
+        screen = self.screen
         cyles = self.cycles
         self._smart_gen_values()
         actions = self.actions # {fun_int: 'func_name'}
@@ -336,6 +384,8 @@ class AI_(turtle.Turtle):
         times = 0
         again = False
         cycle = list()
+        screen.listen()
+        screen.update()
         if not(self._file_empty("params.txt")):
             with open("params.txt", "rb") as f:
                 f_func_params = pickle.load(f)
@@ -403,6 +453,10 @@ class AI_(turtle.Turtle):
                     print ("\n", "#PREVENTING AI FROM HIDING", "\n")
                     times -= 1
                     continue
+                elif (action == 'shearfactor'):
+                    print ("\n", "#PREVENTING AI FROM SHEARING", "\n")
+                    times -= 1
+                    continue
                 if not(self._param_needed(getattr(self.Turtle, action)) is False):
                     needed_param = self._param_needed(getattr(self.Turtle, action))
                     fun = getattr(self.Turtle, action)
@@ -436,6 +490,7 @@ class AI_(turtle.Turtle):
             prev_x = curr_x
             prev_y = curr_y
         self._good_cycle(cycle, pos_with_fun)
+        
 
 
 """
@@ -460,7 +515,7 @@ def cycle(cycles):
 
 if __name__ == "__main__":
     screen = turtle.Screen()
-    AI = AI_(10)
+    AI = AI_(10, screen)
     ##acts = int(functions.good_input("How many actions per cycle? [up to 50]:", values=[str(i) for i in range(1,51)]))
     cycles = int(functions.good_input("How many cycles? [up to 10]:", values=[str(i) for i in range(1,11)]))
     cycle(cycles)
