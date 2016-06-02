@@ -6,7 +6,7 @@ from itertools import combinations as comb
 from modules import functions
 
 turtle_functions = turtle._tg_turtle_functions
-bad_functions = ['undobufferentries', 'setundobuffer', 'getscreen', 'ht', 'onclick', 'onrelease', 'ondrag', 'clearstamp', 'clearstamps', 'radians', 'shapesize', 'shape', 'width', 'resizemode']#, ...etc.
+bad_functions = ['undobufferentries', 'setundobuffer', 'getscreen', 'ht', 'onclick', 'onrelease', 'ondrag', 'clearstamp', 'clearstamps', 'radians', 'shapesize', 'shape', 'width', 'resizemode', 'shearfactor', 'shapetransform']#, ...etc.
 for i in turtle_functions:
     if i in bad_functions:
         turtle_functions.remove(i)
@@ -170,7 +170,7 @@ class AI_(turtle.Turtle):
                 ## 2 >>> bool
                 if typ == 0:
                     ## int
-                    int_value = random.choice(range(1,50))
+                    int_value = random.choice(range(-90,90))
                     values[i][0] = int_value
                 elif typ == 1:
                     ## str
@@ -184,8 +184,6 @@ class AI_(turtle.Turtle):
                     bools = [True, False]
                     bool_value = random.choice(bools)
                     values[i][2] = bool_value
-                else:
-                    print ("#BREAK")
         
         """print (values) >>> {
             'param_0' : [012, 'abc', True],
@@ -272,17 +270,37 @@ class AI_(turtle.Turtle):
     def erase_stats(self, f_params=False, prefs=False, cycles=False, all_=False):
         assert (not((f_params is False) and (prefs is False) and (cycles is False) and (all_ is False))),"Please specify object to erase"
         if f_params:
-            open("params.txt", "wb").close()
+            certain = functions.good_input("Are you sure you want to erase 'f_params'?: [y] or [n]\n", values=['y', 'n']).casefold()
+            if certain == 'y':
+                print ("Erasing 'params'... \n")
+                open("params.txt", "wb").close()
+            else:
+                print ("Not erasing 'f_params'... \n")
         if prefs:
-            open("prefs.txt", "wb").close()
+            certain = functions.good_input("Are you sure you want to erase 'prefs'?: [y] or [n]\n", values=['y', 'n']).casefold()
+            if certain == 'y':
+                print ("Erasing 'prefs'... \n")
+                open("prefs.txt", "wb").close()
+            else:
+                print ("Not erasing 'prefs'... \n")
         if cycles:
-            open("cycles.txt", "wb").close()
+            certain = functions.good_input("Are you sure you want to erase 'cycles'?: [y] or [n]\n", values=['y', 'n']).casefold()
+            if certain == 'y':
+                print ("Erasing 'cycles'... \n")
+                open("cycles.txt", "wb").close()
+            else:
+                print ("Not erasing 'cycles'... \n")
         if all_:
-            open("params.txt", "wb").close()
-            open("prefs.txt", "wb").close()
-            open("cycles.txt", "wb").close()
-            open("memory.txt", "wb").close()
-            open("last_acts.txt", "wb").close()
+            certain = functions.good_input("Are you sure you want to erase EVERYTHING?: [y] or [n]\n", values=['y', 'n']).casefold()
+            if certain == 'y':
+                print ("Erasing EVERYTHING... \n")
+                open("params.txt", "wb").close()
+                open("prefs.txt", "wb").close()
+                open("cycles.txt", "wb").close()
+                open("memory.txt", "wb").close()
+                open("last_acts.txt", "wb").close()
+            else:
+                print ("Not erasing EVERYTHING... \n")
 
     def _run_again(self, act):
         ##print ("\n", "#ACT: ", act, "\n")
