@@ -109,7 +109,7 @@ class AI_(turtle.Turtle):
         ##  IF FUN HAS 2 PARAMS, IT GENERATES 2 PARAMS, THEN DOES FUN(PARAM_0), FUN(PARAM_1), PASSING ONLY 1 PARAM AT A TIME
         ##  USE: '_new_working_param'
         func_params = self.func_params
-        rnd_value = random.choice(range(100))
+        rnd_value = random.choice(range(101))
         types = ['str', 'int', 'bool']
         values = []
         strings = [i for i in range(0b01100001,0b01111010)]
@@ -156,15 +156,21 @@ class AI_(turtle.Turtle):
 
             circle(radius,degrees=360)
         """
+        self_none = 0
         for p in params:
-            if (p != 'self') and (p != None):
+            if not ((p == 'self') and (p == None)):
                 param_dict.setdefault(p)
+            else:
+                self_none += 1
+        if self_none == len(params) - 1:
+            print ("All params were 'self' or 'None', returning ...")
+            return params
+
         params = param_dict
 
         working_perms = False
         none_run = 0
         
-
         for i in params:
             values.setdefault(i, [0, 0, 0])
             for typ in range(3):
@@ -223,10 +229,14 @@ class AI_(turtle.Turtle):
             p = list(p)
             try:
                 fun(*p)
+                working_perms = True
                 return [*p]
             except:
                 ##print ("%s did not work" % [*p])
                 pass
+
+        ## FIND A WAY TO CONTINUOUSLY GENERATE PARAMETERS UNTIL WORKING SEQUENCE IS FOUND (NEW METHOD?)
+        print ("\n", "P : %s |" % p, " type(p) : %s" % type(p), "\n")
 
 
 
@@ -310,7 +320,7 @@ class AI_(turtle.Turtle):
         chance = self.chance
         ## >>> [1, 0, 0, 1, etc.]
         ##print ("\n", "RANGE(ACT, (101-CHANCE)): ", range(act, (101-chance)), "\n")
-        again = random.choice(range(act, (101-chance)))
+        again = random.choice(range(act - 1, (101-chance)))
         if again == act:
             ##prefers that option
             return True
@@ -323,6 +333,8 @@ class AI_(turtle.Turtle):
         goal_y = goal_loc[1]
         cycle_pref = {}
         self.cycle_pref = cycle_pref
+        if len(positions) == 0:
+            return
         for index, i in enumerate(cycle):
             cycle_pref[index] = [i, 0]
             ##print ("\n", "#cycle_pref :", cycle_pref, "\n")
@@ -483,10 +495,10 @@ class AI_(turtle.Turtle):
 
             func_params[action] = working_param
             if not(again):
-                time.sleep(0.5)
+                time.sleep(0.25)
                 times += 1
             else:
-                time.sleep(0.5)
+                time.sleep(0.25)
 
             prev_x = curr_x
             prev_y = curr_y
