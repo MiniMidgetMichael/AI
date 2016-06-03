@@ -145,11 +145,6 @@ class AI_(turtle.Turtle):
     def _new_working_param(self, fun, params):
         func_params = self.func_params
         param_dict = {}
-        n_params = len(params)
-        strings = [i for i in range(0b01100001,0b01111010)]
-        values = {} # for each param, gen: str, int, bool value
-        total_values = []
-        ##print ("fun: ", fun, "# of params: ",n_params, "params: ",params)
         """EX:
             fun = circle
             params = ['radius', 'degrees'] >>> [<class 'int'>, <class 'int'>]
@@ -168,31 +163,8 @@ class AI_(turtle.Turtle):
 
         params = param_dict
 
-        working_perms = False
         none_run = 0
-        
-        for i in params:
-            values.setdefault(i, [0, 0, 0])
-            for typ in range(3):
-                ## 0 >>> int
-                ## 1 >>> str
-                ## 2 >>> bool
-                if typ == 0:
-                    ## int
-                    int_value = random.choice(range(-90,90))
-                    values[i][0] = int_value
-                elif typ == 1:
-                    ## str
-                    len_ = random.choice(range(3,10))
-                    str_value = ""
-                    for s in range(len_):
-                        str_value += chr(random.choice(strings))
-                    values[i][1] = str_value
-                elif typ == 2:
-                    ## bool
-                    bools = [True, False]
-                    bool_value = random.choice(bools)
-                    values[i][2] = bool_value
+
         
         """print (values) >>> {
             'param_0' : [012, 'abc', True],
@@ -204,26 +176,79 @@ class AI_(turtle.Turtle):
             'param_1' : None
             }
         """
-        for v in values.values():
-            for i in v:
-                total_values.append(i)
 
         """print (total_values) >>> [012, 'abc', True, 345, 'def', False]"""
         ##permutations(iterable[, r]) --> permutations object
         ##combinations(iterable[, r]) --> combinations object
-        perms = perm(total_values,n_params-1)
-        ##DON'T PRINT PERMUTATIONS!!!!
-        perms = list(perms)
-        n_perms = list()
-        has_str = False
+        g_params = self.__gen_params(params)
+        while g_params == 'break':
+            g_params = self.__gen_params(params)
+        else:
+            return g_params
 
-        for index, i in enumerate(perms):
-            for p_index, p in enumerate(i):
-                if (type(p) is str):
-                    has_str = True
-                    n_perms.append(i)
-                if (p_index == len(i) - 1) and not(has_str):
-                    n_perms.insert(0, i)
+    def __gen_params(self, params):
+        strings = [i for i in range(0b01100001,0b01111010)]
+        values = {}
+        working_perms = False
+        total_values = []
+        n_perms = []
+        n_params = len(params)
+        
+        for i in params:
+            values.setdefault(i, [0, 0, 0])
+            for typ in range(3):
+                ## 0 >>> int
+                ## 1 >>> bool
+                ## 2 >>> str
+                if typ == 0:
+                    ## int
+                    int_value = random.choice(range(-90,90))
+                    values[i][0] = int_value
+                elif typ == 1:
+                    ## bool
+                    bools = [True, False]
+                    bool_value = random.choice(bools)
+                    values[i][1] = bool_value
+                elif typ == 2:
+                    ## str
+                    len_ = random.choice(range(3,10))
+                    str_value = ""
+                    for s in range(len_):
+                        str_value += chr(random.choice(strings))
+                    values[i][2] = str_value
+
+        ## values == {
+        ##            'param'   : [123, True, 'abc'],
+        ##            'param_1' : [345, False, 'def'], ...
+        ##           }
+
+        p_dict = {}
+        p_loc = 0
+        ## create perm of values[k] for parameters
+
+
+
+
+
+
+
+##        for v in values.values():
+##            for i in v:
+##                total_values.append(i)
+##
+##        perms = perm(total_values,n_params-1)
+##
+##        perms = list(perms)
+##
+##        has_str = False
+##
+##        for index, i in enumerate(perms):
+##            for p_index, p in enumerate(i):
+##                if (type(p) is str):
+##                    has_str = True
+##                    n_perms.append(i)
+##                if (p_index == len(i) - 1) and not(has_str):
+##                    n_perms.insert(0, i)
 
         for p in n_perms:
             p = list(p)
@@ -234,12 +259,9 @@ class AI_(turtle.Turtle):
             except:
                 ##print ("%s did not work" % [*p])
                 pass
-
-        ## FIND A WAY TO CONTINUOUSLY GENERATE PARAMETERS UNTIL WORKING SEQUENCE IS FOUND (NEW METHOD?)
-        print ("\n", "P : %s |" % p, " type(p) : %s" % type(p), "\n")
-
-
-
+            
+        #print ("\n", "P : %s |" % p, " type(p) : %s" % type(p), "\n")
+        return 'break' # didn't working, returning to _new_working_param
 
     def get_ran_fun(self):
         if not(self._file_empty("memory.txt")):
