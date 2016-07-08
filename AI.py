@@ -1,4 +1,4 @@
-#! C:/Users/MichaelLFarwell/AppData/Local/Programs/Python/Python35-32/python.exe
+#! /usr/bin/python3
 import random, math, turtle, time, inspect, pickle, os, sys
 from AI_target import *
 from itertools import permutations as perm
