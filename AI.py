@@ -363,7 +363,6 @@ class AI_(turtle.Turtle):
                             fun = getattr(self.Turtle, action)
                             working_param = self._new_working_param(fun, needed_param)
                             print (action, working_param)
-                            cycle.append([action, working_param])
                             curr_x = self.Turtle.xcor()
                             curr_y = self.Turtle.ycor()
                             curr_pos = [curr_x, curr_y]
@@ -379,7 +378,7 @@ class AI_(turtle.Turtle):
                         times += 1
                         again = True
             if again == True:
-                
+                cycle.append([action, working_param])
                 ##print ("#CYCLE IN 'smart_act': ", cycle)
                 if not(working_param is None):
                     func_params[action] = working_param
@@ -405,7 +404,6 @@ class AI_(turtle.Turtle):
                     fun = getattr(self.Turtle, action)
                     working_param = self._new_working_param(fun, needed_param)
                     print (action, working_param)
-                    cycle.append([action, working_param])
                     curr_x = self.Turtle.xcor()
                     curr_y = self.Turtle.ycor()
                     curr_pos = [curr_x, curr_y]
@@ -419,6 +417,8 @@ class AI_(turtle.Turtle):
                             prefs.setdefault(action, 0)
                         else:
                             prefs[action] += 1
+                    if not(action in cycle):
+                        cycle.append([action, working_param])
                     ##print ("#CYCLE IN 'smart_act': ", cycle)
                     if not(working_param is None):
                         func_params[action] = working_param
