@@ -6,11 +6,21 @@ from itertools import combinations as comb
 from modules import functions
 
 turtle_functions = turtle._tg_turtle_functions
-bad_functions = ['undobufferentries', 'setundobuffer', 'getscreen', 'ht', 'onclick', 'onrelease', 'ondrag', 'clearstamp', 'clearstamps', 'radians', 'shapesize', 'shape', 'width', 'resizemode', 'shearfactor', 'shapetransform', 'turtlesize']#, ...etc.
+bad_functions = ['undobufferentries', 'setundobuffer', 'begin_fill', 'begin_poly', 'color', 'down', 'degrees', 'distance', 'dot', 'getscreen', 'ht', 'onclick', 'onrelease', 'ondrag', 'clearstamp', 'clearstamps', 'radians', 'shapesize', 'shape', 'width', 'resizemode', 'shearfactor', 'shapetransform', 'turtlesize']#, ...etc.
 for i in turtle_functions:
     if i in bad_functions:
         turtle_functions.remove(i)
         ##print ("Removing %s from turtle_functions" % i)
+
+func_params = {
+    "back" : (int,),
+    "backward" : (int,),
+    "bk" : (int,),
+    "forward" : (int,),
+    "fd" : (int,),
+    "circle" : (int,int,)#, etc.
+    
+    }
 
 class AI_(turtle.Turtle):
     def __init__(self, chance, screen):
