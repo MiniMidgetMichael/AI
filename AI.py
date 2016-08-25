@@ -27,9 +27,8 @@ func_params = {
     "setx" : (int,),
     "sety" : (int,),
     "speed" : (int,),
-    "undo" : (None,),
-    
-    }
+    "undo" : (None,),    
+}
 
 class AI_(turtle.Turtle):
     def __init__(self, chance, screen):
@@ -51,19 +50,6 @@ class AI_(turtle.Turtle):
         self.rec_positions = rec_positions
         self.cycles = {}
 
-    def _gen_values(self):
-        actions = self.actions
-        freq = range(self.chance, 100)
-        if not(bool(actions)):
-            for i in turtle_functions:
-                actions[i] = random.choice(freq)
-        options = {}
-        for i, k in actions.items():
-            options[i] = [0, "UK"]
-        self.options = options
-        ##print (actions)
-        ##print (options)
-
     def _smart_gen_values(self):
         actions = self.actions
         prefs = self.prefs
@@ -80,86 +66,7 @@ class AI_(turtle.Turtle):
             return False
 
     def _file_empty(self, file):
-        return False if os.path.isfile(file) and os.path.getsize(file) > 0 else True
-
-    def act(self, t):
-        self._gen_values()
-        ##print(self.func_params)
-        if not(self._file_empty("memory.txt")):
-            with open("memory.txt", "rb") as f:
-                func_params = pickle.load(f)
-                self.func_params.update(func_params)
-        ##print(self.func_params)
-        func_params = self.func_params
-        r_time = 0
-        actions = self.actions
-        chance = self.chance
-        options = self.options
-        func_params = self.func_params
-        ##print (actions.values())
-        ##values = list(actions.values())
-        values = dict.fromkeys(actions.values())
-        k = 0
-        for i in values:
-            values[i] = list(actions.keys())[k]
-            k += 1
-        ##print (values)
-        action = random.choice(range(chance, 100))
-        while r_time < t:
-            action = random.choice(range(chance, 100))
-            if (action in values):
-                print (action, values[action])
-                action = values[action]
-                if not(self._param_needed(getattr(self.Turtle, action)) is False):
-                    needed_param = self._param_needed(getattr(self.Turtle, action))
-                    options[action][0] += 1
-                    options[action][1] = needed_param
-                    func_params[action] = self._working_param(getattr(self.Turtle, action), needed_param)
-            else:
-                print (action)
-            time.sleep(0.5)
-            r_time += 0.5
-
-        with open("memory.txt", "wb") as f:
-            func_params = self.func_params
-            pickle.dump(func_params, f)
-
-    def _working_param(self, fun, params):
-        ##  IF FUN HAS 2 PARAMS, IT GENERATES 2 PARAMS, THEN DOES FUN(PARAM_0), FUN(PARAM_1), PASSING ONLY 1 PARAM AT A TIME
-        ##  USE: '_new_working_param'
-        func_params = self.func_params
-        rnd_value = random.choice(range(101))
-        types = ['str', 'int', 'bool']
-        values = []
-        strings = [i for i in range(0b01100001,0b01111010)]
-        good_type = False
-        for i in params:
-            for index, i in enumerate(types):
-                if index == 0:
-                    ##type == str
-                    len_ = random.choice(range(3, 10))
-                    value = ""
-                    for i in range(len_):
-                        value += chr(random.choice(strings))
-                    values.append(value)
-                elif index == 1:
-                    ##type == int
-                    value = random.choice(range(1, 50))
-                    values.append(value)
-                else:
-                    ##type == bool
-                    value = random.choice(range(0,1))
-                    ##choose either 1 or 0
-                    value = bool(value)
-                    ##convert value to bool [i.e. 1 ==> True, 0 ==> False]
-                    values.append(value)
-        for index, i in enumerate(values):
-            try:
-                fun(i)
-                return i
-            except:
-                pass
-                
+        return False if os.path.isfile(file) and os.path.getsize(file) > 0 else True                
 
     def _new_working_param(self, fun, params):
         func_params = self.func_params
