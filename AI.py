@@ -5,12 +5,8 @@ from itertools import permutations as perm
 from itertools import combinations as comb
 from modules import functions
 
-turtle_functions = turtle._tg_turtle_functions
-bad_functions = ['undobufferentries', 'setundobuffer', 'begin_fill', 'begin_poly', 'color', 'down', 'degrees', 'distance', 'dot', 'getscreen', 'ht', 'onclick', 'onrelease', 'ondrag', 'clearstamp', 'clearstamps', 'radians', 'shapesize', 'shape', 'width', 'resizemode', 'shearfactor', 'shapetransform', 'turtlesize']#, ...etc.
-for i in turtle_functions:
-    if i in bad_functions:
-        turtle_functions.remove(i)
-        ##print ("Removing %s from turtle_functions" % i)
+turtle_functions = ['back', 'backward', 'bk', 'circle', 'clear', 'fd', 'forward', 'goto', 'home', 'left', 'right', 'lt', 'rt', 'setpos', 'setposition', 'setx', 'sety',
+                    'speed', 'undo']
 
 func_params = {
     "back" : (int,),
@@ -18,7 +14,20 @@ func_params = {
     "bk" : (int,),
     "forward" : (int,),
     "fd" : (int,),
-    "circle" : (int,int,)#, etc.
+    "circle" : (int,int,),#, etc.
+    "clear" : (None,),
+    "goto" : (int,),
+    "home" : (None,),
+    "left" : (int,),
+    "right" : (int,),
+    "lt" : (int,),
+    "rt" : (int,),
+    "setpos" : (int,),
+    "setposition" : (int,),
+    "setx" : (int,),
+    "sety" : (int,),
+    "speed" : (int,),
+    "undo" : (None,),
     
     }
 
