@@ -2,14 +2,39 @@
 import random, math, turtle, time, inspect, pickle, os, sys
 from AI_target import *
 from itertools import permutations as perm
+from itertools import combinations as comb
 from modules import functions
 
-turtle_functions = turtle._tg_turtle_functions
+turtle_functions = ['back', 'backward', 'bk', 'circle', 'clear', 'fd', 'forward', 'goto', 'home', 'left', 'right', 'lt', 'rt', 'setpos', 'setposition', 'setx', 'sety',
+                    'speed', 'undo']
 
+func_params = {
+    "back" : (int,),
+    "backward" : (int,),
+    "bk" : (int,),
+    "forward" : (int,),
+    "fd" : (int,),
+    "circle" : (int,int,),#, etc.
+    "clear" : (None,),
+    "goto" : (int,),
+    "home" : (None,),
+    "left" : (int,),
+    "right" : (int,),
+    "lt" : (int,),
+    "rt" : (int,),
+    "setpos" : (int,),
+    "setposition" : (int,),
+    "setx" : (int,),
+    "sety" : (int,),
+    "speed" : (int,),
+    "undo" : (None,),    
+}
 
 class AI_(turtle.Turtle):
-    def __init__(self, chance):
+    def __init__(self, chance, screen):
         assert ((type(chance) is int) and (chance > 0) and (chance < 100)), "chance must be int, and 0 < chance < 100"
+        assert (type(screen) is turtle._Screen),"screen must be <class 'turtle.Screen>, not %s" % type(screen)
+        self.screen = screen
         self.chance = chance
         __turtle_ = turtle.Turtle()
         self.Turtle = __turtle_
@@ -24,19 +49,6 @@ class AI_(turtle.Turtle):
         rec_positions = []
         self.rec_positions = rec_positions
         self.cycles = {}
-
-    def _gen_values(self):
-        actions = self.actions
-        freq = range(self.chance, 100)
-        if not(bool(actions)):
-            for i in turtle_functions:
-                actions[i] = random.choice(freq)
-        options = {}
-        for i, k in actions.items():
-            options[i] = [0, "UK"]
-        self.options = options
-        ##print (actions)
-        ##print (options)
 
     def _smart_gen_values(self):
         actions = self.actions
@@ -54,86 +66,7 @@ class AI_(turtle.Turtle):
             return False
 
     def _file_empty(self, file):
-        return False if os.path.isfile(file) and os.path.getsize(file) > 0 else True
-
-    def act(self, t):
-        self._gen_values()
-        ##print(self.func_params)
-        if not(self._file_empty("memory.txt")):
-            with open("memory.txt", "rb") as f:
-                func_params = pickle.load(f)
-                self.func_params.update(func_params)
-        ##print(self.func_params)
-        func_params = self.func_params
-        r_time = 0
-        actions = self.actions
-        chance = self.chance
-        options = self.options
-        func_params = self.func_params
-        ##print (actions.values())
-        ##values = list(actions.values())
-        values = dict.fromkeys(actions.values())
-        k = 0
-        for i in values:
-            values[i] = list(actions.keys())[k]
-            k += 1
-        ##print (values)
-        action = random.choice(range(chance, 100))
-        while r_time < t:
-            action = random.choice(range(chance, 100))
-            if (action in values):
-                print (action, values[action])
-                action = values[action]
-                if not(self._param_needed(getattr(self.Turtle, action)) is False):
-                    needed_param = self._param_needed(getattr(self.Turtle, action))
-                    options[action][0] += 1
-                    options[action][1] = needed_param
-                    func_params[action] = self._working_param(getattr(self.Turtle, action), needed_param)
-            else:
-                print (action)
-            time.sleep(0.5)
-            r_time += 0.5
-
-        with open("memory.txt", "wb") as f:
-            func_params = self.func_params
-            pickle.dump(func_params, f)
-
-    def _working_param(self, fun, params):
-        ##  IF FUN HAS 2 PARAMS, IT GENERATES 2 PARAMS, THEN DOES FUN(PARAM_0), FUN(PARAM_1), PASSING ONLY 1 PARAM AT A TIME
-        ##  USE: '_new_working_param'
-        func_params = self.func_params
-        rnd_value = random.choice(range(100))
-        types = ['str', 'int', 'bool']
-        values = []
-        strings = [i for i in range(0b01100001,0b01111010)]
-        good_type = False
-        for i in params:
-            for index, i in enumerate(types):
-                if index == 0:
-                    ##type == str
-                    len_ = random.choice(range(3, 10))
-                    value = ""
-                    for i in range(len_):
-                        value += chr(random.choice(strings))
-                    values.append(value)
-                elif index == 1:
-                    ##type == int
-                    value = random.choice(range(1, 50))
-                    values.append(value)
-                else:
-                    ##type == bool
-                    value = random.choice(range(0,1))
-                    ##choose either 1 or 0
-                    value = bool(value)
-                    ##convert value to bool [i.e. 1 ==> True, 0 ==> False]
-                    values.append(value)
-        for index, i in enumerate(values):
-            try:
-                fun(i)
-                return i
-            except:
-                pass
-                
+        return False if os.path.isfile(file) and os.path.getsize(file) > 0 else True                
 
     def _new_working_param(self, fun, params):
         func_params = self.func_params
@@ -142,43 +75,53 @@ class AI_(turtle.Turtle):
         strings = [i for i in range(0b01100001,0b01111010)]
         values = {} # for each param, gen: str, int, bool value
         total_values = []
-        ##print ("fun: ", fun, "# of params: ",n_params)
+        ##print ("fun: ", fun, "# of params: ",n_params, "params: ",params)
         """EX:
             fun = circle
             params = ['radius', 'degrees'] >>> [<class 'int'>, <class 'int'>]
-
             circle(radius,degrees=360)
         """
+        self_none = 0
         for p in params:
-            if (p != 'self') and (p != None):
+            if not ((p == 'self') and (p == None)):
                 param_dict.setdefault(p)
+            else:
+                self_none += 1
+        if self_none == len(params) - 1:
+            print ("All params were 'self' or 'None', returning ...")
+            return params
+
         params = param_dict
+
+        working_perms = False
+        none_run = 0
         
         for i in params:
-            values.setdefault(i, [None, None, None])
+            values.setdefault(i, [0, 0, 0])
             for typ in range(3):
-                ## 0 >>> str
-                ## 1 >>> int
+                ## 0 >>> int
+                ## 1 >>> str
                 ## 2 >>> bool
                 if typ == 0:
+                    ## int
+                    int_value = random.choice(range(-90,90))
+                    values[i][0] = int_value
+                elif typ == 1:
                     ## str
                     len_ = random.choice(range(3,10))
                     str_value = ""
                     for s in range(len_):
                         str_value += chr(random.choice(strings))
-                    values[i][0] = str_value
-                if typ == 1:
-                    ## int
-                    int_value = random.choice(range(1,50))
-                    values[i][1] = int_value
+                    values[i][1] = str_value
                 elif typ == 2:
                     ## bool
-                    bool_value = bool(random.choice(range(2)))
+                    bools = [True, False]
+                    bool_value = random.choice(bools)
                     values[i][2] = bool_value
         
         """print (values) >>> {
-            'param_0' : ['abc', 012, True],
-            'param_1' : ['cde', 345, False]
+            'param_0' : [012, 'abc', True],
+            'param_1' : [345, 'def', False]
             }
         """
         """print (params) >>> {
@@ -190,19 +133,36 @@ class AI_(turtle.Turtle):
             for i in v:
                 total_values.append(i)
 
-        """print (total_values) >>> ['abc',012,True,'cde',345,False]"""
+        """print (total_values) >>> [012, 'abc', True, 345, 'def', False]"""
         ##permutations(iterable[, r]) --> permutations object
-        ##print (list(perm(total_values,2)))
+        ##combinations(iterable[, r]) --> combinations object
         perms = perm(total_values,n_params-1)
         ##DON'T PRINT PERMUTATIONS!!!!
-        for p in perms:
+        perms = list(perms)
+        n_perms = list()
+        has_str = False
+
+        for index, i in enumerate(perms):
+            for p_index, p in enumerate(i):
+                if (type(p) is str):
+                    has_str = True
+                    n_perms.append(i)
+                if (p_index == len(i) - 1) and not(has_str):
+                    n_perms.insert(0, i)
+
+        for p in n_perms:
+            p = list(p)
             try:
                 fun(*p)
+                working_perms = True
                 return [*p]
             except:
+                ##print ("%s did not work" % [*p])
                 pass
-        
-        
+
+        ## FIND A WAY TO CONTINUOUSLY GENERATE PARAMETERS UNTIL WORKING SEQUENCE IS FOUND (NEW METHOD?)
+        print ("\n", "P : %s |" % p, " type(p) : %s" % type(p), "\n")
+
 
 
 
@@ -245,42 +205,110 @@ class AI_(turtle.Turtle):
             with open(cycles, "wb") as p:
                 pickle.dump(self.cycles, p)
 
+    def erase_stats(self, f_params=False, prefs=False, cycles=False, all_=False):
+        assert (not((f_params is False) and (prefs is False) and (cycles is False) and (all_ is False))),"Please specify object to erase"
+        if f_params:
+            certain = functions.good_input("Are you sure you want to erase 'f_params'?: [y] or [n]\n", values=['y', 'n']).casefold()
+            if certain == 'y':
+                print ("Erasing 'params'... \n")
+                open("params.txt", "wb").close()
+            else:
+                print ("Not erasing 'f_params'... \n")
+        if prefs:
+            certain = functions.good_input("Are you sure you want to erase 'prefs'?: [y] or [n]\n", values=['y', 'n']).casefold()
+            if certain == 'y':
+                print ("Erasing 'prefs'... \n")
+                open("prefs.txt", "wb").close()
+            else:
+                print ("Not erasing 'prefs'... \n")
+        if cycles:
+            certain = functions.good_input("Are you sure you want to erase 'cycles'?: [y] or [n]\n", values=['y', 'n']).casefold()
+            if certain == 'y':
+                print ("Erasing 'cycles'... \n")
+                open("cycles.txt", "wb").close()
+            else:
+                print ("Not erasing 'cycles'... \n")
+        if all_:
+            certain = functions.good_input("Are you sure you want to erase EVERYTHING?: [y] or [n]\n", values=['y', 'n']).casefold()
+            if certain == 'y':
+                print ("Erasing EVERYTHING... \n")
+                open("params.txt", "wb").close()
+                open("prefs.txt", "wb").close()
+                open("cycles.txt", "wb").close()
+                open("memory.txt", "wb").close()
+                open("last_acts.txt", "wb").close()
+            else:
+                print ("Not erasing EVERYTHING... \n")
+
     def _run_again(self, act):
+        ##print ("\n", "#ACT: ", act, "\n")
         chance = self.chance
-        prefs = self.prefs
         ## >>> [1, 0, 0, 1, etc.]
-        again = random.choice(range(act, (100-chance)))
+        ##print ("\n", "RANGE(ACT, (101-CHANCE)): ", range(act, (101-chance)), "\n")
+        again = random.choice(range(act - 1, (101-chance)))
         if again == act:
             ##prefers that option
             return True
 
     def _good_cycle(self, cycle, positions):
-        assert (type(cycle) is list),"cycle must be of <class 'list'> with structure: [['func', 'param'], ['func1', 'param1']], not %s" % type(cycle)
+        assert (type(cycle) is list),"cycle must be of <class 'list'> with structure: [['func', ['param']], ['func1', ['param1']]], not %s" % type(cycle)
         assert (type(positions) is list),"positions must be of <class 'list'> with structure: [['func', [x_cor, y_cor]]], not %s" % type(positions)
         goal_loc = goal.get_coor()
+        goal_x = goal_loc[0]
+        goal_y = goal_loc[1]
+        cycle_pref = {}
+        self.cycle_pref = cycle_pref
+        if len(positions) == 0:
+            return
+        for index, i in enumerate(cycle):
+            cycle_pref[index] = [i, 0]
+            ##print ("\n", "#cycle_pref :", cycle_pref, "\n")
+            """ {0 : ['func', ['param']],
+                 1 : ['func_1', ['param_1']]
+                } """
         print ("\n", "#CYCLE: ", cycle, "\n")
         print ("\n", "#POSITIONS: ", positions, "\n")
-        loc_dict = {}
-        cycles = self.cycles
-        num_pos = 0
+        prev_loc = [0, 0]
+        prev_x_diff = abs(positions[0][1][0] - goal_x)
+        prev_y_diff = abs(positions[0][1][1] - goal_y)
+        good_cycle = False
         for index, i in enumerate(positions):
-            if not(i[1] == [0.0, 0.0] or i[1] == [0, 0]):
-                loc_dict[num_pos] = [i[0], i[1]]
-                num_pos += 1
-            """
-            CREATES:    {0: [x_cor, y_cor], 1: [x_cor1, y_cor1] ... }
-            """
-        
+            fun = i[0]
+            loc = i[1]
+            x_cor = loc[0]
+            y_cor = loc[1]
+            prev_x = prev_loc[0]
+            prev_y = prev_loc[1]
+            x_diff = abs(int(x_cor) - int(goal_x))
+            y_diff = abs(int(y_cor) - int(goal_y))
+            if (x_diff < prev_x_diff) and (y_diff < prev_y_diff):
+                cycle_pref[index][1] += 1
+                good_cycle = True
+                #print ("#x < prev_x; y < prev_y")
+            elif (x_diff < prev_x_diff) and (y_diff == prev_y_diff):
+                cycle_pref[index][1] += 1
+                good_cycle = True
+                #print ("#x < prev_x; y == prev_y")
+            elif (y_diff < prev_y_diff) and (x_diff == prev_x_diff):
+                cycle_pref[index][1] += 1
+                good_cycle = True
+                #print ("#x == prev_x; y < prev_y")
+            prev_loc = loc
+            prev_x_diff = x_diff
+            prev_y_diff = y_diff
+        if good_cycle:
+            print ("\n", "#GOOD_CYCLE", "\n")
 
-        print ("\n", "#LOC_DICT: ", loc_dict, "\n")
-        ##print ("\n", "#len(cycle)", len(cycle), "\n")
-        ##print ("\n", "#len(positions)", len(positions), "\n")
+        print ("\n", "#CYCLE_PREF: ", cycle_pref, "\n")
+            
+            
+            
         
-
 
     def smart_act(self, t):
         working_param = None
         prefs = self.prefs
+        screen = self.screen
         cyles = self.cycles
         self._smart_gen_values()
         actions = self.actions # {fun_int: 'func_name'}
@@ -294,6 +322,8 @@ class AI_(turtle.Turtle):
         times = 0
         again = False
         cycle = list()
+        screen.listen()
+        screen.update()
         if not(self._file_empty("params.txt")):
             with open("params.txt", "rb") as f:
                 f_func_params = pickle.load(f)
@@ -328,6 +358,7 @@ class AI_(turtle.Turtle):
                             fun = getattr(self.Turtle, action)
                             working_param = self._new_working_param(fun, needed_param)
                             print (action, working_param)
+                            cycle.append([action, working_param])
                             curr_x = self.Turtle.xcor()
                             curr_y = self.Turtle.ycor()
                             curr_pos = [curr_x, curr_y]
@@ -343,7 +374,7 @@ class AI_(turtle.Turtle):
                         times += 1
                         again = True
             if again == True:
-                cycle.append([action, working_param])
+                
                 ##print ("#CYCLE IN 'smart_act': ", cycle)
                 if not(working_param is None):
                     func_params[action] = working_param
@@ -360,11 +391,16 @@ class AI_(turtle.Turtle):
                     print ("\n", "#PREVENTING AI FROM HIDING", "\n")
                     times -= 1
                     continue
+                elif (action == 'shearfactor'):
+                    print ("\n", "#PREVENTING AI FROM SHEARING", "\n")
+                    times -= 1
+                    continue
                 if not(self._param_needed(getattr(self.Turtle, action)) is False):
                     needed_param = self._param_needed(getattr(self.Turtle, action))
                     fun = getattr(self.Turtle, action)
                     working_param = self._new_working_param(fun, needed_param)
                     print (action, working_param)
+                    cycle.append([action, working_param])
                     curr_x = self.Turtle.xcor()
                     curr_y = self.Turtle.ycor()
                     curr_pos = [curr_x, curr_y]
@@ -378,22 +414,21 @@ class AI_(turtle.Turtle):
                             prefs.setdefault(action, 0)
                         else:
                             prefs[action] += 1
-                    if not(action in cycle):
-                        cycle.append([action, working_param])
                     ##print ("#CYCLE IN 'smart_act': ", cycle)
                     if not(working_param is None):
                         func_params[action] = working_param
 
             func_params[action] = working_param
             if not(again):
-                time.sleep(0.5)
+                time.sleep(0.25)
                 times += 1
             else:
-                time.sleep(0.5)
+                time.sleep(0.25)
 
             prev_x = curr_x
             prev_y = curr_y
         self._good_cycle(cycle, pos_with_fun)
+        
 
 
 """
@@ -412,12 +447,13 @@ def cycle(cycles):
         print ("\n", "REC_POSITIONS: ", AI.rec_positions, "\n")
         c += 1
         print ("\n", "END OF CYCLE #%s" % c, "\n")
+        print ("\n", "RESETTING TURTLE", "\n")
+        AI.Turtle.reset()
 
 
 if __name__ == "__main__":
     screen = turtle.Screen()
-    AI = AI_(10)
+    AI = AI_(10, screen)
     ##acts = int(functions.good_input("How many actions per cycle? [up to 50]:", values=[str(i) for i in range(1,51)]))
     cycles = int(functions.good_input("How many cycles? [up to 10]:", values=[str(i) for i in range(1,11)]))
     cycle(cycles)
-
