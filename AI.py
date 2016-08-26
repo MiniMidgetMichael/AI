@@ -5,8 +5,9 @@ from itertools import permutations as perm
 from itertools import combinations as comb
 from modules import functions
 
-turtle_functions = ['back', 'backward', 'bk', 'circle', 'clear', 'fd', 'forward', 'goto', 'home', 'left', 'right', 'lt', 'rt', 'setpos', 'setposition', 'setx', 'sety',
-                    'speed', 'undo']
+turtle_functions = ['back', 'backward', 'bk', 'circle', 'clear', 'fd', 'forward', 'goto',
+                    'home', 'left', 'right', 'lt', 'rt', 'setpos', 'setposition', 'setx',
+                    'sety', 'speed', 'undo']
 
 func_params = {
     "back" : (int,),
@@ -40,11 +41,8 @@ class AI_(turtle.Turtle):
         self.Turtle = __turtle_
         actions = {}
         self.actions = actions
-        func_params = {}
-        good_functions = {}
         prefs = {}
         self.prefs = prefs
-        self.good_functions = good_functions
         self.func_params = func_params
         rec_positions = []
         self.rec_positions = rec_positions
